@@ -8,6 +8,17 @@ async function bootstrap() {
     .setTitle('MistFarm')
     .setDescription('지유인가요, 지호인가요?')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'JWT 토큰을 입력해주세요',
+        in: 'header',
+      },
+      'access-token',
+    )
     .addServer('http://localhost:3000/', 'Local environment')
     .addTag('Your API Tag')
     .build();
