@@ -8,8 +8,7 @@ async function bootstrap() {
     .setTitle('MistFarm')
     .setDescription('지유인가요, 지호인가요?')
     .setVersion('1.0')
-    .addServer('http://localhost:3000/', 'Local environment')
-    .addTag('Your API Tag')
+    .addServer('http://localhost:3000/', '로컬 환경')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
