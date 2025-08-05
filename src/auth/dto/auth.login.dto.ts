@@ -9,7 +9,7 @@ export class AuthLoginDto {
   @IsString()
   @ApiProperty({ example: 'password123', description: '비밀번호' })
   password: string;
-  
+
   @IsString()
   @ApiProperty({ example: '김먼지', description: '이름' })
   name: string;
