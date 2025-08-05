@@ -4,6 +4,8 @@ import { AuthSignupDto } from './dto/auth.signup.dto';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { AuthTokenDto } from './dto/auth.token.dto';
 import { AuthNameDto } from './dto/auth.name.dto';
+import { AuthPasswordUpdateDto } from './dto/auth.password.update.dto';
+import { AuthPersonalInformationDto } from './dto/auth.personal.information.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,12 +27,13 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Patch('/name')
-  async changeName(@Body() name: AuthNameDto) {}
+  async changeName(@Body() authNameDto: AuthNameDto) {}
 
   @ApiBearerAuth()
   @Patch('/password')
-  async changePassword() {}
+  async changePassword(@Body() authPasswordUpdateDto: AuthPasswordUpdateDto) {}
 
+  @ApiOkResponse({ type: AuthPersonalInformationDto })
   @ApiBearerAuth()
   @Get('/me')
   async getMe() {}
