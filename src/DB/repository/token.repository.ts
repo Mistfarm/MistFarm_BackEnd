@@ -30,7 +30,7 @@ export class TokenRepository {
   async exists(refresh_token: string) {
     return await this.repo.exists({ where: { refresh_token } });
   }
-  
+
   async deleteRefreshToken(refresh_token: string) {
     return await this.repo.delete({ refresh_token });
   }

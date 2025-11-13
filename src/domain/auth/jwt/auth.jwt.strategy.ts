@@ -9,7 +9,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { UserRepository } from '../../../DB/repository/user.repository';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '../../../DB/entity/user.entity';
-import { throws } from 'node:assert';
 
 @Injectable()
 export class AuthJwtStrategy extends PassportStrategy(Strategy, 'jwt') {

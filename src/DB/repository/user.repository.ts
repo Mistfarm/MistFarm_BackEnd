@@ -19,11 +19,11 @@ export class UserRepository {
     return this.repo.save(user);
   }
 
-  async deleteUser(user: UserEntity){
+  async deleteUser(user: UserEntity) {
     return this.repo.delete(user);
   }
 
-  async updateUser(user: UserEntity){
+  async updateUser(user: UserEntity) {
     return this.repo.save(user);
   }
 }

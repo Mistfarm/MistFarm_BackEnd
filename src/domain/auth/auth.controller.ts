@@ -69,7 +69,7 @@ export class AuthController {
 
   @UseGuards(AuthJwtGuard)
   @Get('/test')
-  test(@DecoraterUser() user: UserEntity){
+  test(@DecoraterUser() user: UserEntity) {
     return user;
   }
 

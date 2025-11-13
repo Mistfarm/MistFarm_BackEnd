@@ -14,7 +14,6 @@ import { UserEntity } from '../../DB/entity/user.entity';
 import { AuthUpdateUserProfile } from './dto/auth.update.user.profile';
 import { AuthRefreshTokenDto } from './dto/auth.refreshToken.dto';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -45,7 +44,7 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new BadRequestException('비밀번호가 틀렸습니다');
     }
-    
+
     const refreshToken = await this.jwtTokenService.issueRefreshToken(email);
     const tokenDto: AuthTokenDto =
       await this.jwtTokenService.reissueAccessToken(refreshToken);
@@ -71,10 +70,10 @@ export class AuthService {
     }
     await this.userRepo.updateUser(user);
   }
-  personalInformation(user: UserEntity){
+  personalInformation(user: UserEntity) {
     return { email: user.email, name: user.name };
   }
-  async reissueAccessToken(refreshTokenDto: AuthRefreshTokenDto){
+  async reissueAccessToken(refreshTokenDto: AuthRefreshTokenDto) {
     return this.jwtTokenService.reissueAccessToken(
       refreshTokenDto.refreshToken,
     );

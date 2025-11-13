@@ -1,6 +1,4 @@
 import {
-  HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -78,7 +76,7 @@ export class AuthTokenService {
     const neWRefreshToken = await this.issueRefreshToken(user.email);
     return { accessToken, refreshToken: neWRefreshToken };
   }
-  async deleteRefreshToken(refreshToken: string){
+  async deleteRefreshToken(refreshToken: string) {
     await this.tokenRepo.deleteRefreshToken(refreshToken);
   }
 }
