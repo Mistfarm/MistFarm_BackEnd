@@ -1,9 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { UserRepository } from '../../../DB/repository/user.repository';
 import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '../../../DB/entity/user.entity';
+import { throws } from 'node:assert';
 
 @Injectable()
 export class AuthJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -11,10 +17,15 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private userRepo: UserRepository,
     private configService: ConfigService,
   ) {
+    const secret = configService.get<string>('JWT_SECRET');
+    if (!secret) {
+      throw new InternalServerErrorException('.env 불러오기 실패');
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false, //만료 알잘딱 하겠다
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET')!,
+      ignoreExpiration: false,
+      secretOrKey: secret,
     });
   }
 
@@ -26,7 +37,7 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new NotFoundException('삭제된 사용자 입니다');
     }
     return user;
   }

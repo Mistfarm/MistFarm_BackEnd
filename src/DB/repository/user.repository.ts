@@ -18,4 +18,12 @@ export class UserRepository {
     const user = this.repo.create({ email, password, name });
     return this.repo.save(user);
   }
+
+  async deleteUser(user: UserEntity){
+    return this.repo.delete(user);
+  }
+
+  async updateUser(user: UserEntity){
+    return this.repo.save(user);
+  }
 }

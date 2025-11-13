@@ -6,9 +6,10 @@ import { AuthModule } from './domain/auth/auth.module';
 import { PlantModule } from './domain/plant/plant.module';
 import { NoticeModule } from './domain/notice/notice.module';
 import { DataBaseModule } from './DB/data.base.module';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './DB/entity/user.entity';
-import { ConfigModule } from '@nestjs/config';
+import { TokenEntity } from './DB/entity/token.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserEntity],
+      entities: [UserEntity, TokenEntity],
       synchronize: true,
     }),
     AuthModule,

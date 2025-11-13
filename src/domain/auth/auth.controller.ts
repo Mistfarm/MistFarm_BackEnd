@@ -1,25 +1,40 @@
-import { Controller, Post, Body, Delete, Patch, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  Patch,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth.login.dto';
 import { AuthSignupDto } from './dto/auth.signup.dto';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { AuthTokenDto } from './dto/auth.token.dto';
-import { AuthNameDto } from './dto/auth.name.dto';
-import { AuthPasswordUpdateDto } from './dto/auth.password.update.dto';
+import { AuthUpdateUserProfile } from './dto/auth.update.user.profile';
 import { AuthPersonalInformationDto } from './dto/auth.personal.information.dto';
 import { AuthService } from './auth.service';
+import { DecoraterUser } from './decorater/decorater.user';
+import { UserEntity } from '../../DB/entity/user.entity';
+import { AuthJwtGuard } from './jwt/auth.jwt.guard';
+import { AuthLogoutDto } from './dto/auth.logout.dto';
+import { AuthRefreshTokenDto } from './dto/auth.refreshToken.dto';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @ApiOkResponse({ type: AuthTokenDto })
   @Post('/auth/login')
   async login(@Body() authLoginDto: AuthLoginDto) {
-    await this.authService.login(authLoginDto);
+    return await this.authService.login(authLoginDto);
   }
 
+  @UseGuards(AuthJwtGuard)
   @ApiBearerAuth()
   @Post('/auth/logout')
-  async logout() {}
+  async logout(@Body() authLogoutDto: AuthLogoutDto) {
+    await this.authService.logout(authLogoutDto);
+  }
 
   @ApiOkResponse({ type: AuthTokenDto })
   @Post('/auth/signup')
@@ -27,20 +42,40 @@ export class AuthController {
     await this.authService.signup(authSignupDto);
   }
 
+  @UseGuards(AuthJwtGuard)
   @ApiBearerAuth()
   @Delete('/me')
-  async deleteMe() {}
+  async deleteMe(@DecoraterUser() user: UserEntity) {
+    await this.authService.deleteUser(user);
+  }
 
+  @UseGuards(AuthJwtGuard)
   @ApiBearerAuth()
-  @Patch('/name')
-  async changeName(@Body() authNameDto: AuthNameDto) {}
+  @Patch('/me')
+  async updateUserProfile(
+    @DecoraterUser() user: UserEntity,
+    @Body() authUpdateUserProfile: AuthUpdateUserProfile,
+  ) {
+    await this.authService.updateUserProfile(user, authUpdateUserProfile);
+  }
 
-  @ApiBearerAuth()
-  @Patch('/password')
-  async changePassword(@Body() authPasswordUpdateDto: AuthPasswordUpdateDto) {}
-
+  @UseGuards(AuthJwtGuard)
   @ApiOkResponse({ type: AuthPersonalInformationDto })
   @ApiBearerAuth()
   @Get('/me')
-  async getMe() {}
+  getMe(@DecoraterUser() user: UserEntity): AuthPersonalInformationDto {
+    return this.authService.personalInformation(user);
+  }
+
+  @UseGuards(AuthJwtGuard)
+  @Get('/test')
+  test(@DecoraterUser() user: UserEntity){
+    return user;
+  }
+
+  @Post('/auth/refresh')
+  @ApiOkResponse({ type: AuthTokenDto })
+  async reissueAccessToken(@Body() refreshTokenDto: AuthRefreshTokenDto) {
+    return this.authService.reissueAccessToken(refreshTokenDto);
+  }
 }
