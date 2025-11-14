@@ -3,6 +3,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
+/**
+ * Bootstraps and starts the NestJS application with API documentation and global validation.
+ *
+ * Configures Swagger/OpenAPI with the "MistFarm" metadata and mounts the UI at `/api-docs`, enables a global ValidationPipe for request validation, and starts the HTTP server on the port specified by `PORT` or 3000.
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const options = new DocumentBuilder()
