@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { DeviceController } from './device.controller';
 
 @Module({
-  controllers: [DeviceController]
+  controllers: [DeviceController],
 })
 export class DeviceModule {}

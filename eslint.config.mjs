@@ -34,9 +34,9 @@ export default tseslint.config(
       'prettier/prettier': [
         'warn',
         {
-          endOfLine: 'auto'
-        }
-      ]
+          endOfLine: 'auto',
+        },
+      ],
     },
   },
 );
