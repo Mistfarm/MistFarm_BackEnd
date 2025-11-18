@@ -22,21 +22,21 @@ export class AuthService {
   ) {}
 
   async signup(authSignupDto: AuthSignupDto) {
-    const { email, password, name } = authSignupDto;
+    const { id, password, name } = authSignupDto;
 
-    if ((await this.userRepo.findByEmail(email)) != null) {
-      throw new ConflictException('이미 존재하는 이메일입니다');
+    if ((await this.userRepo.findById(id)) != null) {
+      throw new ConflictException('이미 존재하는 아이디입니다');
     }
 
-    await this.userRepo.create(email, await bcrypt.hash(password, 10), name);
+    await this.userRepo.create(id, await bcrypt.hash(password, 10), name);
   }
 
   async login(authLoginDto: AuthLoginDto) {
-    const { email, password } = authLoginDto;
-    const user = await this.userRepo.findByEmail(email);
+    const { id, password } = authLoginDto;
+    const user = await this.userRepo.findById(id);
 
     if (!user) {
-      throw new BadRequestException('이메일이 존재하지 않습니다');
+      throw new BadRequestException('아이디이 존재하지 않습니다');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -45,7 +45,7 @@ export class AuthService {
       throw new BadRequestException('비밀번호가 틀렸습니다');
     }
 
-    const refreshToken = await this.jwtTokenService.issueRefreshToken(email);
+    const refreshToken = await this.jwtTokenService.issueRefreshToken(id);
     const tokenDto: AuthTokenDto =
       await this.jwtTokenService.reissueAccessToken(refreshToken);
 
@@ -71,7 +71,7 @@ export class AuthService {
     await this.userRepo.updateUser(user);
   }
   personalInformation(user: UserEntity) {
-    return { email: user.email, name: user.name };
+    return { id: user.id, name: user.name };
   }
   async reissueAccessToken(refreshTokenDto: AuthRefreshTokenDto) {
     return this.jwtTokenService.reissueAccessToken(

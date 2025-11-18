@@ -10,12 +10,12 @@ export class UserRepository {
     private readonly repo: Repository<UserEntity>,
   ) {}
 
-  async findByEmail(email: string) {
-    return this.repo.findOne({ where: { email } });
+  async findById(id: string) {
+    return this.repo.findOne({ where: { id } });
   }
 
-  async create(email: string, password: string, name: string) {
-    const user = this.repo.create({ email, password, name });
+  async create(id: string, password: string, name: string) {
+    const user = this.repo.create({ id, password, name });
     return this.repo.save(user);
   }
 

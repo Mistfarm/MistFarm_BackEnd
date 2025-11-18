@@ -28,13 +28,13 @@ export class AuthJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { email: string }): Promise<UserEntity> {
-    const { email } = payload;
+  async validate(payload: { id: string }): Promise<UserEntity> {
+    const { id } = payload;
 
-    if (!email) {
+    if (!id) {
       throw new UnauthorizedException('토큰 정보 부족');
     }
-    const user = await this.userRepo.findByEmail(email);
+    const user = await this.userRepo.findById(id);
     if (!user) {
       throw new NotFoundException('삭제된 사용자 입니다');
     }

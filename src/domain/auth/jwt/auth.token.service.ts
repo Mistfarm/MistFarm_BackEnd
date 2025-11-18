@@ -17,8 +17,8 @@ export class AuthTokenService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async issueRefreshToken(email: string) {
-    const user = await this.userRepo.findByEmail(email);
+  async issueRefreshToken(id: string) {
+    const user = await this.userRepo.findById(id);
     if (!user) throw new NotFoundException('존재하지 않은 유저입니다');
 
     // payload 구성
@@ -66,14 +66,14 @@ export class AuthTokenService {
     await this.tokenRepo.deleteRefreshToken(refreshToken);
 
     // 2. payload 구성 및 access token 생성
-    const payload = { email: user.email };
+    const payload = { id: user.id };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '1m', // 필요하면 변경
     });
 
-    const neWRefreshToken = await this.issueRefreshToken(user.email);
+    const neWRefreshToken = await this.issueRefreshToken(user.id);
     return { accessToken, refreshToken: neWRefreshToken };
   }
   async deleteRefreshToken(refreshToken: string) {

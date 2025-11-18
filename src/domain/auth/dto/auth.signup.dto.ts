@@ -1,14 +1,18 @@
-import { IsEmail, IsString, Matches } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthSignupDto {
   @IsString()
+  @Matches(/^[가-힣a-zA-Z]{2,25}$/, {
+    message:
+      '이름은 공백, 특수문자, 숫자 없이 2자 이상 25자 이하로 입력해주세요.',
+  })
   @ApiProperty({ example: '김먼지', description: '이름' })
   name: string;
 
-  @IsEmail()
-  @ApiProperty({ example: 'test123@maile.com', description: '사용자 이메일' })
-  email: string;
+  @IsString()
+  @ApiProperty({ example: 'test123', description: '사용자 아이디' })
+  id: string;
 
   @IsString()
   @Matches(/^[^\s]{8,25}$/, {
