@@ -13,7 +13,7 @@ async function bootstrap() {
     .build();
 
   app.enableCors({
-    origin: 'https://mist-farm.online', // 허용할 도메인
+    origin: 'https://mistfarm.vercel.app', // 허용할 도메인
     methods: 'GET,POST,PUT,PATCH,DELETE',
     credentials: true, // 쿠키 허용 시
   });
