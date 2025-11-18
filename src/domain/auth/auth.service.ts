@@ -25,7 +25,7 @@ export class AuthService {
     const { id, password, name } = authSignupDto;
 
     if ((await this.userRepo.findById(id)) != null) {
-      throw new ConflictException('이미 존재하는 이메일입니다');
+      throw new ConflictException('이미 존재하는 아이디입니다');
     }
 
     await this.userRepo.create(id, await bcrypt.hash(password, 10), name);
@@ -36,7 +36,7 @@ export class AuthService {
     const user = await this.userRepo.findById(id);
 
     if (!user) {
-      throw new BadRequestException('이메일이 존재하지 않습니다');
+      throw new BadRequestException('아이디이 존재하지 않습니다');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
