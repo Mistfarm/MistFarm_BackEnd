@@ -12,6 +12,12 @@ async function bootstrap() {
     .addServer('http://localhost:3000/', '로컬 환경')
     .build();
 
+  app.enableCors({
+    origin: 'https://mist-farm.online', // 허용할 도메인
+    methods: 'GET,POST,PUT,PATCH,DELETE',
+    credentials: true, // 쿠키 허용 시
+  });
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
