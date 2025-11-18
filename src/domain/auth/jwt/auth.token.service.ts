@@ -18,7 +18,7 @@ export class AuthTokenService {
   ) {}
 
   async issueRefreshToken(id: string) {
-    const user = await this.userRepo.findByid(id);
+    const user = await this.userRepo.findById(id);
     if (!user) throw new NotFoundException('존재하지 않은 유저입니다');
 
     // payload 구성
