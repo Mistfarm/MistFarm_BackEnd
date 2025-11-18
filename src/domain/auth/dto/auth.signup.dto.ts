@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Matches } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthSignupDto {
@@ -6,9 +6,8 @@ export class AuthSignupDto {
   @ApiProperty({ example: '김먼지', description: '이름' })
   name: string;
 
-  @IsEmail()
-  @ApiProperty({ example: 'test123@maile.com', description: '사용자 이메일' })
-  email: string;
+  @ApiProperty({ example: 'test123', description: '사용자 아이디' })
+  id: string;
 
   @IsString()
   @Matches(/^[^\s]{8,25}$/, {
