@@ -36,7 +36,7 @@ export class AuthService {
     const user = await this.userRepo.findById(id);
 
     if (!user) {
-      throw new BadRequestException('아이디이 존재하지 않습니다');
+      throw new BadRequestException('아이디가 존재하지 않습니다');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
