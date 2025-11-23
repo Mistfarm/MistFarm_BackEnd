@@ -18,13 +18,13 @@ export class ZoneRepository extends Repository<Zone> {
     return this.findOne({ where: { zone_name: name } });
   }
 
-  // 구획 생성 함수
+  // 구획 생성
   async createZone(zone: Partial<Zone>): Promise<Zone> {
     const newZone = this.create(zone);
     return this.save(newZone);
   }
 
-  // 구획 삭제 함수
+  // 구획 삭제
   async deleteZone(zoneId: string): Promise<void> {
     await this.delete({ zone_id: zoneId });
   }
