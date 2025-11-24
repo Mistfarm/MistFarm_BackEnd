@@ -18,7 +18,7 @@ export class DeviceEntity {
   @Column({ name: 'zone_id' })
   zoneId: string;
 
-  @ManyToOne(() => ZoneEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ZoneEntity)
   @JoinColumn({ name: 'zone_id' })
   zone: ZoneEntity;
 
