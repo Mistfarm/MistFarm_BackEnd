@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Zone } from './zone.entity';
+import { CreateZoneDto } from './dto/create-zone.dto';
 
 @Injectable()
 export class ZoneRepository extends Repository<Zone> {
@@ -22,8 +23,17 @@ export class ZoneRepository extends Repository<Zone> {
   }
 
   // 구획 생성
-  async createZone(zone: Partial<Zone>): Promise<Zone> {
-    const newZone = this.create(zone);
+  async createZone(dto: CreateZoneDto): Promise<Zone> {
+    const newZone = this.create({
+      userId: dto.userId,
+      zoneName: dto.zoneName,
+      plants: dto.plants ?? 'none',
+      autoFogMode: dto.autoFogMode ?? false,
+      autoFogOnTime: dto.autoFogOnTime ?? '00:00:00',
+      autoFogOffTime: dto.autoFogOffTime ?? '00:00:00',
+      fogPower: dto.fogPower ?? false,
+      nutrient: dto.nutrient ?? 0,
+    });
     return this.save(newZone);
   }
 
