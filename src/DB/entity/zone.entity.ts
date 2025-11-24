@@ -11,8 +11,7 @@ import { PLANT_TYPES, PlantType } from '../../domain/zone/plant.types';
 @Entity({ name: 'zone' })
 export class ZoneEntity {
   @PrimaryGeneratedColumn('uuid')
-  @Column({ name: 'id' })
-  zoneId: string;
+  id: string;
 
   @Column({ name: 'user_id', type: 'varchar', length: 30 })
   userId: string;
@@ -45,8 +44,8 @@ export class ZoneEntity {
   fogPower: boolean;
 
   @Column({ name: 'nutrient', type: 'integer', default: 0 })
-  nutrient: number;
+  nutrient: string;
 
   @Column({ name: 'is_not_used', type: 'boolean', default: false})
-  isNotUsed: boolean;
+  isNotUsed: string;
 }

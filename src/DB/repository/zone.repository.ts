@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { ZoneEntity } from '../entity/zone.entity';
-import { CreateZoneDto } from '../../domain/zone/dto/create-zone.dto';
 
 @Injectable()
 export class ZoneRepository extends Repository<ZoneEntity> {
@@ -39,7 +38,7 @@ export class ZoneRepository extends Repository<ZoneEntity> {
 
   // 구획 삭제
   async deleteZone(zoneId: string): Promise<boolean> {
-    const result = await this.delete({ zoneId });
+    const result = await this.delete({ id: zoneId });
     return (result.affected ?? 0) > 0;
   }
 

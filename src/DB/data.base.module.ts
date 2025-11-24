@@ -6,10 +6,12 @@ import { TokenRepository } from './repository/token.repository';
 import { TokenEntity } from './entity/token.entity';
 import { ZoneRepository } from './repository/zone.repository';
 import { ZoneEntity } from './entity/zone.entity';
+import { DeviceEntity } from './entity/device.entity';
+import { DeviceRepository } from './repository/device.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, TokenEntity, ZoneEntity])],
-  providers: [UserRepository, TokenRepository, ZoneRepository],
-  exports: [UserRepository, TokenRepository, ZoneRepository],
+  imports: [TypeOrmModule.forFeature([UserEntity, TokenEntity, ZoneEntity, DeviceEntity])],
+  providers: [UserRepository, TokenRepository, ZoneRepository, DeviceRepository],
+  exports: [UserRepository, TokenRepository, ZoneRepository, DeviceRepository],
 })
 export class DataBaseModule {}
