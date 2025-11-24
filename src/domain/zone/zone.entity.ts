@@ -13,10 +13,7 @@ export class Zone {
   @PrimaryGeneratedColumn('uuid')
   zoneId: string;
 
-  @Column({ name: 'user_id' })
-  userId: string;
-
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
