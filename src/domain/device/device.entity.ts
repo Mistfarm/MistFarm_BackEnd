@@ -22,9 +22,9 @@ export class Device {
   @JoinColumn({ name: 'zone_id' })
   zone: Zone;
 
-  @Column({ type: 'int', nullable: true })
-  lon: number; // 위도
+  @Column({ type: 'decimal', precision: 10, scale: 8 })
+  latitude: number; // 위도: -90 ~ 90
 
-  @Column({ type: 'int', nullable: true })
-  lat: number; // 경도
+  @Column({ type: 'decimal', precision: 11, scale: 8 })
+  longitude: number; // 경도: -180 ~ 180
 }
