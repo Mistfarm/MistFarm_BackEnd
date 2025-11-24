@@ -10,8 +10,20 @@ import { DeviceEntity } from './entity/device.entity';
 import { DeviceRepository } from './repository/device.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, TokenEntity, ZoneEntity, DeviceEntity])],
-  providers: [UserRepository, TokenRepository, ZoneRepository, DeviceRepository],
   exports: [UserRepository, TokenRepository, ZoneRepository, DeviceRepository],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserEntity,
+      TokenEntity,
+      ZoneEntity,
+      DeviceEntity,
+    ]),
+  ],
+  providers: [
+    UserRepository,
+    TokenRepository,
+    ZoneRepository,
+    DeviceRepository,
+  ],
 })
 export class DataBaseModule {}
