@@ -9,7 +9,7 @@ import { UserEntity } from './user.entity';
 import { PLANT_TYPES, PlantType } from '../../domain/zone/plant.types';
 
 @Entity({ name: 'zone' })
-export class Zone {
+export class ZoneEntity {
   @PrimaryGeneratedColumn('uuid')
   @Column({ name: 'id' })
   zoneId: string;

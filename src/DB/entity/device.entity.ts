@@ -5,10 +5,10 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Zone } from './zone.entity';
+import { ZoneEntity } from './zone.entity';
 
 @Entity({ name: 'device' })
-export class Device {
+export class DeviceEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,9 +18,9 @@ export class Device {
   @Column({ name: 'zone_id' })
   zoneId: string;
 
-  @ManyToOne(() => Zone, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ZoneEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'zone_id' })
-  zone: Zone;
+  zone: ZoneEntity;
 
   @Column({ type: 'decimal', precision: 10, scale: 8 })
   latitude: number; // 위도: -90 ~ 90
