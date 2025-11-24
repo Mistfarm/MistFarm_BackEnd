@@ -6,7 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from '../../DB/entity/user.entity';
-import { PLANTS, PlantType } from './zone.types';
+import { PLANT_TYPES, PlantType } from './plant.types';
 
 @Entity({ name: 'zones' })
 export class Zone {
@@ -25,7 +25,7 @@ export class Zone {
 
   @Column({
     type: 'enum',
-    enum: PLANTS,
+    enum: PLANT_TYPES,
     default: 'none',
   })
   plants: PlantType;
