@@ -46,4 +46,7 @@ export class ZoneEntity {
 
   @Column({ name: 'nutrient', type: 'integer', default: 0 })
   nutrient: number;
+
+  @Column({ name: 'is_not_used', type: 'boolean', default: false})
+  isNotUsed: boolean;
 }
