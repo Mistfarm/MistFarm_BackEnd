@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Device } from './device.entity';
+import { CreateDeviceDto } from './dto/create-device.dto';
 
 @Injectable()
 export class DeviceRepository extends Repository<Device> {
@@ -8,24 +9,26 @@ export class DeviceRepository extends Repository<Device> {
     super(Device, dataSource.createEntityManager());
   }
 
-  // 장치 조회 by zone
   async findByZoneId(zoneId: string): Promise<Device[]> {
-    return this.find({ where: { zoneId: zoneId } });
+    return this.find({ where: { zoneId } });
   }
 
-  // 단일 장치 조회
   async findByDeviceId(deviceId: string): Promise<Device | null> {
-    return this.findOne({ where: { deviceId: deviceId } });
+    return this.findOne({ where: { deviceId } });
   }
 
-  // 장치 생성
-  async createDevice(device: Partial<Device>): Promise<Device> {
-    const newDevice = this.create(device);
+  async createDevice(createDto: CreateDeviceDto): Promise<Device> {
+    const newDevice = this.create(createDto);
     return this.save(newDevice);
   }
 
-  // 장치 삭제
-  async deleteDevice(id: string): Promise<void> {
-    await this.delete({ id });
+  async deleteDevice(id: string): Promise<boolean> {
+    const result = await this.delete({ id });
+    return (result.affected ?? 0) > 0;
+  }
+
+  async existsByDeviceId(deviceId: string): Promise<boolean> {
+    const count = await this.count({ where: { deviceId } });
+    return count > 0;
   }
 }
