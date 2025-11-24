@@ -16,9 +16,9 @@ export class ZoneRepository extends Repository<ZoneEntity> {
   // 특정 사용자의 구획 이름으로 조회
   async findByNameAndUserId(
     userId: string,
-    zoneName: string,
+    zoneId: string,
   ): Promise<ZoneEntity | null> {
-    return this.findOne({ where: { userId, zoneName } });
+    return this.findOne({ where: { userId, id: zoneId } });
   }
 
   // 구획 생성
