@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { Zone } from '../entity/zone.entity';
+import { ZoneEntity } from '../entity/zone.entity';
 import { CreateZoneDto } from '../../domain/zone/dto/create-zone.dto';
 
 @Injectable()
-export class ZoneRepository extends Repository<Zone> {
+export class ZoneRepository extends Repository<ZoneEntity> {
   constructor(private dataSource: DataSource) {
-    super(Zone, dataSource.createEntityManager());
+    super(ZoneEntity, dataSource.createEntityManager());
   }
 
   // 사용자의 모든 구획 조회
-  async findByUserId(userId: string): Promise<Zone[]> {
+  async findByUserId(userId: string): Promise<ZoneEntity[]> {
     return this.find({ where: { userId } });
   }
 
@@ -18,21 +18,21 @@ export class ZoneRepository extends Repository<Zone> {
   async findByNameAndUserId(
     userId: string,
     zoneName: string,
-  ): Promise<Zone | null> {
+  ): Promise<ZoneEntity | null> {
     return this.findOne({ where: { userId, zoneName } });
   }
 
   // 구획 생성
-  async createZone(dto: CreateZoneDto): Promise<Zone> {
+  async createZone(zone: ZoneEntity): Promise<ZoneEntity> {
     const newZone = this.create({
-      userId: dto.userId,
-      zoneName: dto.zoneName,
-      plants: dto.plants ?? 'none',
-      autoFogMode: dto.autoFogMode ?? false,
-      autoFogOnTime: dto.autoFogOnTime ?? '00:00:00',
-      autoFogOffTime: dto.autoFogOffTime ?? '00:00:00',
-      fogPower: dto.fogPower ?? false,
-      nutrient: dto.nutrient ?? 0,
+      userId: zone.userId,
+      zoneName: zone.zoneName,
+      plants: zone.plants ?? 'none',
+      autoFogMode: zone.autoFogMode ?? false,
+      autoFogOnTime: zone.autoFogOnTime ?? '00:00:00',
+      autoFogOffTime: zone.autoFogOffTime ?? '00:00:00',
+      fogPower: zone.fogPower ?? false,
+      nutrient: zone.nutrient ?? 0,
     });
     return this.save(newZone);
   }

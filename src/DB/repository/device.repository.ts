@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { Device } from '../entity/device.entity';
+import { DeviceEntity } from '../entity/device.entity';
 import { CreateDeviceDto } from '../../domain/device/dto/create-device.dto';
 
 @Injectable()
-export class DeviceRepository extends Repository<Device> {
+export class DeviceRepository extends Repository<DeviceEntity> {
   constructor(private dataSource: DataSource) {
-    super(Device, dataSource.createEntityManager());
+    super(DeviceEntity, dataSource.createEntityManager());
   }
 
-  async findByZoneId(zoneId: string): Promise<Device[]> {
+  async findByZoneId(zoneId: string): Promise<DeviceEntity[]> {
     return this.find({ where: { zoneId } });
   }
 
-  async findByDeviceId(deviceId: string): Promise<Device | null> {
+  async findByDeviceId(deviceId: string): Promise<DeviceEntity | null> {
     return this.findOne({ where: { deviceId } });
   }
 
-  async createDevice(createDto: CreateDeviceDto): Promise<Device> {
-    const newDevice = this.create(createDto);
+  async createDevice(device: DeviceEntity): Promise<DeviceEntity> {
+    const newDevice = this.create(device);
     return this.save(newDevice);
   }
 
