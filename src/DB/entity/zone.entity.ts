@@ -16,7 +16,7 @@ export class ZoneEntity {
   @Column({ name: 'user_id', type: 'varchar', length: 30 })
   userId: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id)
+  @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
