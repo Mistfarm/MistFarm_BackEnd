@@ -10,12 +10,12 @@ export class DeviceRepository extends Repository<Device> {
 
   // 장치 조회 by zone
   async findByZoneId(zoneId: string): Promise<Device[]> {
-    return this.find({ where: { zone_id: zoneId } });
+    return this.find({ where: { zoneId: zoneId } });
   }
 
   // 단일 장치 조회
   async findByDeviceId(deviceId: string): Promise<Device | null> {
-    return this.findOne({ where: { device_id: deviceId } });
+    return this.findOne({ where: { deviceId: deviceId } });
   }
 
   // 장치 생성
