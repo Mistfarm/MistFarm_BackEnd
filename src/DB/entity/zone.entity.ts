@@ -44,8 +44,8 @@ export class ZoneEntity {
   fogPower: boolean;
 
   @Column({ name: 'nutrient', type: 'integer', default: 0 })
-  nutrient: string;
+  nutrient: number;
 
   @Column({ name: 'is_not_used', type: 'boolean', default: false})
-  isNotUsed: string;
+  isNotUsed: boolean;
 }
