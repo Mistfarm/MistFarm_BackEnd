@@ -5,7 +5,7 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Zone } from '../zone/zone.entity';
+import { Zone } from './zone.entity';
 
 @Entity({ name: 'device' })
 export class Device {

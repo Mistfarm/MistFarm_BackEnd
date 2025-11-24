@@ -5,8 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { UserEntity } from '../../DB/entity/user.entity';
-import { PLANT_TYPES, PlantType } from './plant.types';
+import { UserEntity } from './user.entity';
+import { PLANT_TYPES, PlantType } from '../../domain/zone/plant.types';
 
 @Entity({ name: 'zone' })
 export class Zone {
