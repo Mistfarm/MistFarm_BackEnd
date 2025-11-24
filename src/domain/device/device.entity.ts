@@ -13,18 +13,18 @@ export class Device {
   id: string;
 
   @Column({ type: 'varchar', length: 255 })
-  device_id: string;
+  deviceId: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  zone_id: string;
-
-  @Column({ type: 'int', nullable: true })
-  let: number;
-
-  @Column({ type: 'int', nullable: true })
-  lot: number;
+  @Column({ name: 'zone_id' })
+  zoneId: string;
 
   @ManyToOne(() => Zone)
   @JoinColumn({ name: 'zone_id' })
   zone: Zone;
+
+  @Column({ type: 'int', nullable: true })
+  lon: number; // 위도
+
+  @Column({ type: 'int', nullable: true })
+  lat: number; // 경도
 }
