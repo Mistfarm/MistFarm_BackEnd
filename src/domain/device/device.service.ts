@@ -73,4 +73,8 @@ export class DeviceService {
     this.connections.delete(deviceId);
     void this.deviceRepository.disconnectDevice(deviceId);
   }
+  sand<T>(deviceId: number, type: string, payload: T) {
+    const ws = this.connections.get(deviceId);
+    if (ws) ws.send(JSON.stringify({ type, payload }));
+  }
 }
