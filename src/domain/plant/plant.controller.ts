@@ -33,6 +33,7 @@ export class PlantController {
     return await this.plantService.selectPlant(user.user_id, dto);
   }
 
+  @UseGuards(AuthJwtGuard)
   @Get('/zone/setting')
   @HttpCode(HttpStatus.OK)
   async getZoneSetting(
@@ -42,6 +43,7 @@ export class PlantController {
     return this.plantService.getZoneSetting(user.user_id, query);
   }
 
+  @UseGuards(AuthJwtGuard)
   @Put('/zone/setting/mode')
   @HttpCode(HttpStatus.OK)
   async updateFogMode(
