@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { DeviceController } from './device.controller';
+import { DeviceGateway } from './device.gateway';
 
 @Module({
-  controllers: [DeviceController],
+  providers: [DeviceGateway],
 })
 export class DeviceModule {}
