@@ -8,8 +8,6 @@ import { NoticeModule } from './domain/notice/notice.module';
 import { DataBaseModule } from './DB/data.base.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './DB/entity/user.entity';
-import { TokenEntity } from './DB/entity/token.entity';
 import { DeviceSubscriber } from './domain/device/device.subscriber';
 
 @Module({

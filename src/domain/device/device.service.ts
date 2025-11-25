@@ -3,7 +3,6 @@ import { RawData, WebSocket } from 'ws';
 import { IncomingMessage } from 'http';
 import { DeviceInfoDto } from './dto/device.info.dto';
 import { DeviceRepository } from '../../DB/repository/device.repository';
-import { DeviceEntity } from '../../DB/entity/device.entity';
 
 @Injectable()
 export class DeviceService {

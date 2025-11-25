@@ -40,7 +40,7 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async connectDevice(deviceId: number) {
-      await this.update({ deviceId }, { onConnect: true });
+    await this.update({ deviceId }, { onConnect: true });
   }
 
   async saveInfo(info: {
