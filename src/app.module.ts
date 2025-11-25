@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './DB/entity/user.entity';
 import { TokenEntity } from './DB/entity/token.entity';
+import { DeviceSubscriber } from './domain/device/device.subscriber';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TokenEntity } from './DB/entity/token.entity';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      subscribers: [DeviceSubscriber],
     }),
     AuthModule,
     DeviceModule,

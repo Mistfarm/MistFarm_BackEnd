@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RawData, WebSocket } from 'ws';
 import { IncomingMessage } from 'http';
 import { DeviceInfoDto } from './dto/device.info.dto';
@@ -9,7 +9,7 @@ import { DeviceEntity } from '../../DB/entity/device.entity';
 export class DeviceService {
   constructor(private readonly deviceRepository: DeviceRepository) {}
   private connections = new Map<number, WebSocket>();
-  connection(ws: WebSocket, req: IncomingMessage) {
+  async connection(ws: WebSocket, req: IncomingMessage) {
     const url = new URL(req.url!, `http://${req.headers.host}`);
     const deviceId = url.searchParams.get('device_id');
     if (!deviceId) {
@@ -25,6 +25,7 @@ export class DeviceService {
     }
 
     this.connections.set(numberDeviceId, ws);
+    await this.deviceRepository.connectDevice(numberDeviceId);
 
     // 메시지 이벤트 직접 처리
     ws.on('message', (data) => {
@@ -46,7 +47,12 @@ export class DeviceService {
       .map((num) => String.fromCharCode(num))
       .join('');
     //객체로
-    const info = JSON.parse(resultStr) as DeviceInfoDto;
+    let info: DeviceInfoDto;
+    try {
+      info = JSON.parse(resultStr) as DeviceInfoDto;
+    } catch (e) {
+      throw new BadRequestException('입력값이 json이 아님');
+    }
     //단 하나라도 0이 아니면서 nullable일때
     if (
       !info.type ||
@@ -57,23 +63,24 @@ export class DeviceService {
       (info.payload.temperature !== 0 && !info.payload.temperature)
     ) {
       ws.close(1008, '400 Bad Request');
+      throw new BadRequestException('알맞은 형식이 아님');
     }
     return info;
   }
   deviceInfo(deviceId: number, deviceInfoDto: DeviceInfoDto) {
-    const device = new DeviceEntity();
-    device.deviceId = deviceId;
-    device.humidity = deviceInfoDto.payload.humidity;
-    device.temperature = deviceInfoDto.payload.temperature;
-    device.latitude = deviceInfoDto.payload.lat;
-    device.longitude = deviceInfoDto.payload.lon;
-    void this.deviceRepository.saveInfo(device);
+    void this.deviceRepository.saveInfo({
+      deviceId,
+      humidity: deviceInfoDto.payload.humidity,
+      temperature: deviceInfoDto.payload.temperature,
+      latitude: deviceInfoDto.payload.lat,
+      longitude: deviceInfoDto.payload.lon,
+    });
   }
   delete(deviceId: number) {
     this.connections.delete(deviceId);
     void this.deviceRepository.disconnectDevice(deviceId);
   }
-  sand<T>(deviceId: number, type: string, payload: T) {
+  send<T>(deviceId: number, type: string, payload: T) {
     const ws = this.connections.get(deviceId);
     if (ws) ws.send(JSON.stringify({ type, payload }));
   }

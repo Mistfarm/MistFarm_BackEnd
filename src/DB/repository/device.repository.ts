@@ -39,6 +39,10 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     await this.update({ deviceId }, { onConnect: false });
   }
 
+  async connectDevice(deviceId: number) {
+      await this.update({ deviceId }, { onConnect: true });
+  }
+
   async saveInfo(info: {
     deviceId: number;
     humidity: number;

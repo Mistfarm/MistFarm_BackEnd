@@ -14,7 +14,7 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     private readonly deviceRepository: DeviceRepository,
   ) {}
   listenTo() {
-    return ZoneEntity; // User 엔티티만 구독
+    return ZoneEntity; // Zone 엔티티만 구독
   }
 
   afterUpdate(event: UpdateEvent<ZoneEntity>) {
@@ -59,9 +59,9 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
 
   // nutrient 변경 함수
   onNutrientChange(zoneId: string, newValue: number | undefined) {
-    void this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
-        this.deviceService.sand<{ nutrient: number | undefined }>(
+        this.deviceService.send<{ nutrient: number | undefined }>(
           device.deviceId,
           'set-nutrient-ratio',
           { nutrient: newValue },
@@ -72,9 +72,9 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
 
   // fogPower 변경 함수
   onAutoFogChange(zoneId: string, newValue: boolean | undefined) {
-    void this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
-        this.deviceService.sand<{ mode: number; power: number | undefined }>(
+        this.deviceService.send<{ mode: number; power: number | undefined }>(
           device.deviceId,
           'set-fog-mode',
           { mode: 0, power: newValue ? 1 : 0 },
@@ -88,9 +88,9 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     newOnValue: string | undefined,
     newOffValue: string | undefined,
   ) {
-    void this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
-        this.deviceService.sand<{
+        this.deviceService.send<{
           mode: number;
           onInterval: string | undefined;
           offInterval: string | undefined;
