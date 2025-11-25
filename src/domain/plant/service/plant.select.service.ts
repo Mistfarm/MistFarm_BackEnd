@@ -39,7 +39,7 @@ export class ZonePlantServiceByHannah {
   ): Promise<ZoneSettingResponseAuto | ZoneSettingResponseManual> {
     // 1. zone 조회 + user 검증
     const zone = await this.zoneRepo.findOne({
-      where: { zoneId: dto.zone_id, userId },
+      where: { zoneId: dto.zoneId, userId },
     });
 
     if (!zone) {
@@ -100,7 +100,7 @@ export class ZonePlantServiceByHannah {
   async updateMode(userId: string, dto: ZoneModeUpdateDto): Promise<void> {
     // 1. zone 조회 + user 검증
     const zone = await this.zoneRepo.findOne({
-      where: { zoneId: dto.zone_id, userId },
+      where: { zoneId: dto.zoneId, userId },
     });
 
     if (!zone) {

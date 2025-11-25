@@ -1,8 +1,9 @@
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, IsNotEmpty } from 'class-validator';
 
 export class ZoneModeUpdateDto {
   @IsString()
-  zone_id: string;
+  @IsNotEmpty()
+  zoneId: string;
 
   @IsBoolean()
   mode: boolean; // true: 자동, false: 수동
