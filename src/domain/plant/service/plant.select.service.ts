@@ -30,6 +30,5 @@ export class ZonePlantServiceByHannah {
     await this.zoneRepo.save(zone);
 
     return { success: true, plant: dto.plant };
-  }x
+  }
 }
-
