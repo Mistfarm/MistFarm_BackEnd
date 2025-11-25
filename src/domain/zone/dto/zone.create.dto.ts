@@ -7,6 +7,5 @@ export class ZoneCreateDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
   deviceIds: number[];
 }

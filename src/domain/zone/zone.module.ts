@@ -11,6 +11,8 @@ import { ZoneListViewService } from './service/zone.listview.service';
 import { ZoneDeleteService } from './service/zone.delete.service';
 import { DeviceRepository } from '../../DB/repository/device.repository';
 import { ZoneDeviceListService } from './service/zone.device.list.service';
+import { DeviceDeleteByZoneService } from './service/zone.device.delete.service';
+import { DeviceUpdateZoneService } from './service/device.update-zone.service';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ZoneDeviceListService } from './service/zone.device.list.service';
     ZoneDeleteService,
     ZoneDeviceListService,
     DeviceRepository,
+    DeviceDeleteByZoneService,
+    DeviceUpdateZoneService,
   ],
   exports: [ZoneRepository], // 다른 모듈에서 사용할 경우
 })

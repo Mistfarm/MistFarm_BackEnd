@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { DeviceEntity } from '../entity/device.entity';
 
 @Injectable()
@@ -66,5 +66,59 @@ export class DeviceRepository extends Repository<DeviceEntity> {
       newDevice.longitude = info.longitude;
       return this.createDevice(newDevice);
     }
+  }
+
+  async deleteByZoneAndDeviceIds(
+    zoneId: string,
+    deviceIds: number[],
+  ): Promise<number> {
+    const result = await this.delete({
+      zoneId,
+      deviceId: In(deviceIds),
+    });
+    return result.affected ?? 0; // 삭제된 개수 반환
+  }
+
+  async moveDevicesToZone(
+    fromZoneId: string,
+    toZoneId: string,
+  ): Promise<number> {
+    const result = await this.createQueryBuilder()
+      .update()
+      .set({ zoneId: toZoneId })
+      .where('zoneId = :fromZoneId', { fromZoneId })
+      .execute();
+
+    return result.affected ?? 0;
+  }
+
+  async updateZoneForUnusedDevices(
+    deviceIds: string[],
+    newZoneId: string,
+  ): Promise<number> {
+    const result = await this.createQueryBuilder()
+      .update(DeviceEntity)
+      .set({ zoneId: newZoneId })
+      .where({ deviceId: In(deviceIds) })
+      .andWhere('zone_id = :unusedZoneId', { unusedZoneId: newZoneId }) // 안전하게 조건 걸 수 있음
+      .execute();
+
+    return result.affected ?? 0;
+  }
+
+  async findDevicesByIds(deviceIds: string[]): Promise<DeviceEntity[]> {
+    return this.find({ where: { deviceId: In(deviceIds) } });
+  }
+
+  async findDevicesEligibleForMove(names: string[], userId: string) {
+    return this.createQueryBuilder('device')
+      .innerJoinAndSelect('device.zone', 'zone')
+      .where('device.deviceName IN (:...names)', { names })
+      .andWhere('zone.userId = :userId', { userId })
+      .andWhere('zone.zoneName = :zoneName', {
+        zoneName: '사용하지 않는 기기 모음',
+      })
+      .andWhere('zone.isNotUsed = true')
+      .getMany();
   }
 }
