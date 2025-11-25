@@ -8,6 +8,7 @@ import { DeviceEntity } from '../../DB/entity/device.entity';
 @Injectable()
 export class DeviceService {
   constructor(private readonly deviceRepository: DeviceRepository) {}
+  private connections = new Map<number, WebSocket>();
   connection(ws: WebSocket, req: IncomingMessage) {
     const url = new URL(req.url!, `http://${req.headers.host}`);
     const deviceId = url.searchParams.get('device_id');
@@ -23,16 +24,18 @@ export class DeviceService {
       return;
     }
 
+    this.connections.set(numberDeviceId, ws);
+
     // 메시지 이벤트 직접 처리
     ws.on('message', (data) => {
-      const deviceInfoDto = this.messageToDto(ws, numberDeviceId, data);
+      const deviceInfoDto = this.messageToDto(ws, data);
       this.deviceInfo(numberDeviceId, deviceInfoDto);
     });
     ws.on('close', () => {
       this.delete(numberDeviceId);
     });
   }
-  messageToDto(ws: WebSocket, deviceId: number, data: RawData): DeviceInfoDto {
+  messageToDto(ws: WebSocket, data: RawData): DeviceInfoDto {
     const inputString = JSON.stringify(data);
     const input = JSON.parse(inputString) as {
       type: string;
@@ -59,7 +62,14 @@ export class DeviceService {
   deviceInfo(deviceId: number, deviceInfoDto: DeviceInfoDto) {
     const device = new DeviceEntity();
     device.deviceId = deviceId;
+    device.humidity = deviceInfoDto.payload.humidity;
+    device.temperature = deviceInfoDto.payload.temperature;
+    device.latitude = deviceInfoDto.payload.lat;
+    device.longitude = deviceInfoDto.payload.lon;
 
-    this.deviceRepository.createDevice( )
+    this.deviceRepository.saveInfo(device);
+  }
+  delete(deviceId: number) {
+    this.connections.delete(deviceId);
   }
 }

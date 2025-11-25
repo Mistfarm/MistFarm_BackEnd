@@ -34,4 +34,21 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     const count = await this.count({ where: { deviceName } });
     return count > 0;
   }
+
+  async saveInfo(info: {
+    deviceId: number;
+    humidity: number;
+    temperature: number;
+    latitude: number;
+    longitude: number;
+  }) {
+    const device = await this.findOneBy({ deviceId: info.deviceId });
+    if (device) {
+      device.humidity = info.humidity;
+      device.temperature = info.temperature;
+      device.latitude = info.latitude;
+      device.longitude = info.longitude;
+      return this.save(device);
+    }
+  }
 }

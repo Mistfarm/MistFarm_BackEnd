@@ -2,7 +2,6 @@ import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { Server } from 'http';
-import { DeviceInfoDto } from './dto/device.info.dto';
 import { DeviceService } from './device.service';
 
 @Injectable()
