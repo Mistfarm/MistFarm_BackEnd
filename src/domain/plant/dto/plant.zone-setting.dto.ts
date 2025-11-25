@@ -4,26 +4,26 @@ import { PlantType } from '../../zone/plant.types';
 export class ZoneSettingQueryDto {
   @IsString()
   @IsNotEmpty()
-  zone_id: string;
+  zoneId: string;
 }
 
 export interface ZoneSettingResponseAuto {
-  growth_level: number;
+  growthLevel: number;
   humidity: number;
   temperature: number;
   plant: PlantType;
   mode: true;
-  on_interval: string; // "HH:MM:SS"
-  off_interval: string; // "HH:MM:SS"
-  nutrients_rate: number;
+  onInterval: string; // "HH:MM:SS"
+  offInterval: string; // "HH:MM:SS"
+  nutrientsRate: number;
 }
 
 export interface ZoneSettingResponseManual {
-  growth_level: number;
+  growthLevel: number;
   humidity: number;
   temperature: number;
   plant: PlantType;
   mode: false;
   power: boolean;
-  nutrients_rate: number;
+  nutrientsRate: number;
 }
