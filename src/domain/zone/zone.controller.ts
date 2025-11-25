@@ -8,6 +8,7 @@ import {
   UseGuards,
   Get,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ZoneRegistrationDto } from './dto/zone.registration.dto';
 import { CurrentUser } from '../auth/decorater/decorator.user';
@@ -22,6 +23,12 @@ import { ZonesResponse } from './dto/zone.listview.dto';
 import { ZoneListViewService } from './service/zone.listview.service';
 import { ZoneDeleteDto } from './dto/zone.delete.dto';
 import { ZoneDeleteService } from './service/zone.delete.service';
+import { DevicesResponse } from './dto/device.list.dto';
+import { ZoneDeviceListService } from './service/zone.device.list.service';
+import { DeviceDeleteByZoneDto } from './dto/zone.device.delete.dto';
+import { DeviceDeleteByZoneService } from './service/zone.device.delete.service';
+import { DeviceUpdateZoneDto } from './dto/device.update-zone.dto';
+import { DeviceUpdateZoneService } from './service/device.update-zone.service';
 
 @Controller()
 @UseGuards(AuthJwtGuard)
@@ -32,6 +39,9 @@ export class ZoneController {
     private readonly zoneCreateService: ZoneCreateService,
     private readonly zoneListViewService: ZoneListViewService,
     private readonly zoneDeleteService: ZoneDeleteService,
+    private readonly zoneDeviceListService: ZoneDeviceListService,
+    private readonly deviceDeleteService: DeviceDeleteByZoneService,
+    private readonly deviceUpdateService: DeviceUpdateZoneService,
   ) {}
 
   @Post('/zone/developer/I-am-so-happy')
@@ -74,5 +84,34 @@ export class ZoneController {
     @CurrentUser() user: UserEntity,
   ) {
     await this.zoneDeleteService.deleteZone(user.user_id, dto);
+  }
+
+  @Get('/zone/devices')
+  async getDevices(
+    @CurrentUser() user: UserEntity,
+    @Query('zone-id') zoneId: string,
+  ): Promise<DevicesResponse> {
+    return this.zoneDeviceListService.getZoneDevicesByZone(
+      user.user_id,
+      zoneId,
+    );
+  }
+
+  @Delete('/zone/devices')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteDevices(
+    @CurrentUser() user: UserEntity,
+    @Body() dto: DeviceDeleteByZoneDto,
+  ) {
+    await this.deviceDeleteService.deleteDevices(user.user_id, dto);
+  }
+
+  @Put('/zone/devices')
+  @HttpCode(HttpStatus.OK)
+  async updateDeviceZone(
+    @CurrentUser() user: UserEntity,
+    @Body() dto: DeviceUpdateZoneDto,
+  ) {
+    await this.deviceUpdateService.updateDeviceZone(user.user_id, dto);
   }
 }

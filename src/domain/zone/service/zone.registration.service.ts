@@ -21,7 +21,7 @@ export class ZoneRegistrationService {
     userId: string,
     zoneRegistrationDto: ZoneRegistrationDto,
   ): Promise<ZoneEntity> {
-    const { zoneAuthId, zonePassword } = zoneRegistrationDto;
+    const { zoneAuthId, zonePw } = zoneRegistrationDto;
 
     // DEV 계정 확인
     const devKey = this.config.get<string>('DEV');
@@ -49,7 +49,7 @@ export class ZoneRegistrationService {
 
       // 비밀번호 검증
       const isPasswordValid = await bcrypt.compare(
-        zonePassword,
+        zonePw,
         zone.zonePassword,
       );
 

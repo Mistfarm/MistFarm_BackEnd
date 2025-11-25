@@ -13,12 +13,14 @@ import { AuthLogoutDto } from './dto/auth.logout.dto';
 import { UserEntity } from '../../DB/entity/user.entity';
 import { AuthUpdateUserProfile } from './dto/auth.update.user.profile';
 import { AuthRefreshTokenDto } from './dto/auth.refreshToken.dto';
+import { ZoneRepository } from '../../DB/repository/zone.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepo: UserRepository,
     private readonly jwtTokenService: AuthTokenService,
+    private readonly zoneRepo: ZoneRepository,
   ) {}
 
   async signup(authSignupDto: AuthSignupDto) {
@@ -29,6 +31,20 @@ export class AuthService {
     }
 
     await this.userRepo.create(id, await bcrypt.hash(password, 10), name);
+
+    const user = await this.userRepo.findById(id);
+
+    if (!user) {
+      throw new BadRequestException('아이디가 존재하지 않습니다');
+    }
+
+    await this.zoneRepo.save(
+      this.zoneRepo.create({
+        zoneName: '사용하지 않는 기기 모음',
+        userId: user.user_id,
+        isNotUsed: true,
+      }),
+    );
   }
 
   async login(authLoginDto: AuthLoginDto) {

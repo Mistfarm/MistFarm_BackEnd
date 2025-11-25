@@ -9,6 +9,7 @@ import { DataBaseModule } from './DB/data.base.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ZoneModule } from './domain/zone/zone.module';
+import { DeviceSubscriber } from './domain/device/device.subscriber';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ZoneModule } from './domain/zone/zone.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      subscribers: [DeviceSubscriber],
     }),
     AuthModule,
     DeviceModule,

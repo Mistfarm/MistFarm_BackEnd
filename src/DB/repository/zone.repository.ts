@@ -65,4 +65,13 @@ export class ZoneRepository extends Repository<ZoneEntity> {
       where: { userId, zoneName },
     });
   }
+
+  async findUnusedZoneByUserId(userId: string) {
+    return this.createQueryBuilder('zone')
+      .where('zone.userId = :userId', { userId })
+      .andWhere('zone.zoneName = :name', { name: '사용하지 않는 기기 모음' })
+      .andWhere('zone.isNotUsed = :flag', { flag: true })
+      .getOne();
+  }
+
 }
