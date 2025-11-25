@@ -93,13 +93,13 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async updateZoneForUnusedDevices(
-    deviceIds: string[],
+    deviceNames: string[],
     newZoneId: string,
   ): Promise<number> {
     const result = await this.createQueryBuilder()
       .update(DeviceEntity)
       .set({ zoneId: newZoneId })
-      .where({ deviceId: In(deviceIds) })
+      .where({ deviceName: In(deviceNames) })
       .andWhere('zone_id = :unusedZoneId', { unusedZoneId: newZoneId }) // 안전하게 조건 걸 수 있음
       .execute();
 
