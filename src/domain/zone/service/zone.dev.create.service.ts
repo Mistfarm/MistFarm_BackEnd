@@ -12,7 +12,6 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ZoneDevCreateService {
-  private readonly logger = new Logger(ZoneDevCreateService.name);
   private readonly SALT_ROUNDS = 10;
 
   constructor(
@@ -24,22 +23,21 @@ export class ZoneDevCreateService {
     userId: string,
     zoneCreateDto: ZoneDevCreateDto,
   ): Promise<ZoneEntity> {
-    this.logger.log(`Creating new zone ${zoneCreateDto.zoneAuthId}`);
 
     // DEV 권한 확인
     const devKey = this.config.get<string>('DEV');
 
     if (devKey !== userId) {
-      this.logger.warn(`Unauthorized zone creation attempt by user: ${userId}`);
       throw new UnauthorizedException('권한이 없습니다.');
     }
 
-    // 중복 체크
+    // 중복 체크 - zoneRegisterId로 확인
     const existingZone = await this.zoneRepo.findOne({
-      where: { zoneId: zoneCreateDto.zoneAuthId },
+      where: { zoneRegisterId: zoneCreateDto.zoneAuthId },
     });
+
     if (existingZone) {
-      throw new ConflictException('이미 존재하는 구획 ID입니다.');
+      throw new ConflictException('이미 존재하는 구획 인증 ID입니다.');
     }
 
     // 비밀번호 해시화
@@ -48,16 +46,16 @@ export class ZoneDevCreateService {
       this.SALT_ROUNDS,
     );
 
-    // 새 zone 생성
+    // 새 zone 생성 - zoneId는 자동 생성됨
     const newZone = this.zoneRepo.create({
-      zoneId: zoneCreateDto.zoneAuthId,
+      zoneRegisterId: zoneCreateDto.zoneAuthId, // 사용자 입력 ID
       zonePassword: hashedPassword,
       zoneName: zoneCreateDto.zoneName,
       userId: devKey,
+      isNotUsed: false, // 명시적 설정
     });
-    const savedZone = await this.zoneRepo.save(newZone);
 
-    this.logger.log(`Zone ${zoneCreateDto.zoneAuthId} created successfully`);
+    const savedZone = await this.zoneRepo.save(newZone);
 
     return savedZone;
   }

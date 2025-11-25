@@ -13,12 +13,12 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     return this.find({ where: { userId } });
   }
 
-  // 특정 사용자의 구획 이름으로 조회
+  // 특정 사용자의 구획 ID로 조회
   async findByZoneIdAndUserId(
     userId: string,
     zoneId: string,
   ): Promise<ZoneEntity | null> {
-    return this.findOne({ where: { userId: userId, id: zoneId } });
+    return this.findOne({ where: { userId, zoneId } });
   }
 
   // 구획 생성
@@ -38,16 +38,27 @@ export class ZoneRepository extends Repository<ZoneEntity> {
 
   // 구획 삭제
   async deleteZone(zoneId: string): Promise<boolean> {
-    const result = await this.delete({ id: zoneId });
+    const result = await this.delete({ zoneId });
     return (result.affected ?? 0) > 0;
   }
 
-  // 구획 존재 여부 확인
-  async existsByNameAndUserId(
+  // 같은 사용자가 이미 같은 이름의 구획을 가지고 있는지 확인
+  async existsByZoneNameAndUserId(
     userId: string,
     zoneName: string,
   ): Promise<boolean> {
-    return await this.exist({
+    const count = await this.count({
+      where: { userId, zoneName },
+    });
+    return count > 0;
+  }
+
+  // 같은 사용자의 구획 중 같은 이름이 있는지 확인하고 해당 구획 반환
+  async findByZoneNameAndUserId(
+    userId: string,
+    zoneName: string,
+  ): Promise<ZoneEntity | null> {
+    return this.findOne({
       where: { userId, zoneName },
     });
   }

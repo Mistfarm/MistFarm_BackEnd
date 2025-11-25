@@ -11,13 +11,13 @@ import { PLANT_TYPES, PlantType } from '../../domain/zone/plant.types';
 @Entity()
 export class ZoneEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  zoneId: string;
 
   @Column({
-    name: 'zone_id',
+    name: 'register_id',
     nullable: true,
   })
-  zoneId: string;
+  zoneRegisterId: string;
 
   @Column({
     name: 'zone_password',
@@ -27,7 +27,7 @@ export class ZoneEntity {
   })
   zonePassword: string;
 
-  @Column({ name: 'user_id', type: 'uuid' }) // ✅ UUID 타입으로 변경
+  @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
 
   @ManyToOne(() => UserEntity)
