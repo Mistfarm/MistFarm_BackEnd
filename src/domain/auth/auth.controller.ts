@@ -14,7 +14,7 @@ import { AuthTokenDto } from './dto/auth.token.dto';
 import { AuthUpdateUserProfile } from './dto/auth.update.user.profile';
 import { AuthPersonalInformationDto } from './dto/auth.personal.information.dto';
 import { AuthService } from './auth.service';
-import { DecoraterUser } from './decorater/decorater.user';
+import { CurrentUser } from './decorater/decorator.user';
 import { UserEntity } from '../../DB/entity/user.entity';
 import { AuthJwtGuard } from './jwt/auth.jwt.guard';
 import { AuthLogoutDto } from './dto/auth.logout.dto';
@@ -45,7 +45,7 @@ export class AuthController {
   @UseGuards(AuthJwtGuard)
   @ApiBearerAuth()
   @Delete('/me')
-  async deleteMe(@DecoraterUser() user: UserEntity) {
+  async deleteMe(@CurrentUser() user: UserEntity) {
     await this.authService.deleteUser(user);
   }
 
@@ -53,7 +53,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Patch('/me')
   async updateUserProfile(
-    @DecoraterUser() user: UserEntity,
+    @CurrentUser() user: UserEntity,
     @Body() authUpdateUserProfile: AuthUpdateUserProfile,
   ) {
     await this.authService.updateUserProfile(user, authUpdateUserProfile);
@@ -63,13 +63,13 @@ export class AuthController {
   @ApiOkResponse({ type: AuthPersonalInformationDto })
   @ApiBearerAuth()
   @Get('/me')
-  getMe(@DecoraterUser() user: UserEntity): AuthPersonalInformationDto {
+  getMe(@CurrentUser() user: UserEntity): AuthPersonalInformationDto {
     return this.authService.personalInformation(user);
   }
 
   @UseGuards(AuthJwtGuard)
   @Get('/test')
-  test(@DecoraterUser() user: UserEntity) {
+  test(@CurrentUser() user: UserEntity) {
     return user;
   }
 

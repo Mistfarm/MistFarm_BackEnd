@@ -1,7 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { ZoneEntity } from './zone.entity';
 
-@Entity({ name: 'device' })
+@Entity()
 export class DeviceEntity {
   @PrimaryColumn()
   deviceId: number;
@@ -9,7 +9,7 @@ export class DeviceEntity {
   @Column({ name: 'zone_id', nullable: true, default: null })
   zoneId?: string | null;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   deviceName: string;
 
   @ManyToOne(() => ZoneEntity)

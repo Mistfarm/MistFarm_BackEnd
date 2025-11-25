@@ -8,6 +8,7 @@ import { NoticeModule } from './domain/notice/notice.module';
 import { DataBaseModule } from './DB/data.base.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ZoneModule } from './domain/zone/zone.module';
 import { DeviceSubscriber } from './domain/device/device.subscriber';
 
 @Module({
@@ -29,6 +30,7 @@ import { DeviceSubscriber } from './domain/device/device.subscriber';
     PlantModule,
     NoticeModule,
     DataBaseModule,
+    ZoneModule,
   ],
   controllers: [AppController],
   providers: [AppService],
