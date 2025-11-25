@@ -8,19 +8,33 @@ import {
 import { UserEntity } from './user.entity';
 import { PLANT_TYPES, PlantType } from '../../domain/zone/plant.types';
 
-@Entity({ name: 'zone' })
+@Entity()
 export class ZoneEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  zoneId: string;
 
-  @Column({ name: 'user_id', type: 'varchar', length: 30 })
+  @Column({
+    name: 'register_id',
+    nullable: true,
+  })
+  zoneRegisterId: string;
+
+  @Column({
+    name: 'zone_password',
+    type: 'varchar',
+    length: 60,
+    nullable: true,
+  })
+  zonePassword: string;
+
+  @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @Column({ name: 'zone_name', type: 'varchar', length: 15 })
+  @Column({ name: 'zone_name', type: 'varchar', length: 15, nullable: true })
   zoneName: string;
 
   @Column({
@@ -46,6 +60,6 @@ export class ZoneEntity {
   @Column({ name: 'nutrient', type: 'integer', default: 0 })
   nutrient: number;
 
-  @Column({ name: 'is_not_used', type: 'boolean', default: false})
+  @Column({ name: 'is_not_used', type: 'boolean', default: false })
   isNotUsed: boolean;
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { DeviceEntity } from '../entity/device.entity';
-import { CreateDeviceDto } from '../../domain/device/dto/create-device.dto';
 
 @Injectable()
 export class DeviceRepository extends Repository<DeviceEntity> {
@@ -23,7 +22,7 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async deleteDevice(id: string): Promise<boolean> {
-    const result = await this.delete({ id });
+    const result = await this.delete({ deviceId: id });
     return (result.affected ?? 0) > 0;
   }
 
