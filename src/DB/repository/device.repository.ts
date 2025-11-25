@@ -35,6 +35,10 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     return count > 0;
   }
 
+  async disconnectDevice(deviceId: number) {
+    await this.update({ deviceId }, { onConnect: false });
+  }
+
   async saveInfo(info: {
     deviceId: number;
     humidity: number;

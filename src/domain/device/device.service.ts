@@ -71,5 +71,6 @@ export class DeviceService {
   }
   delete(deviceId: number) {
     this.connections.delete(deviceId);
+    this.deviceRepository.disconnectDevice(deviceId);
   }
 }
