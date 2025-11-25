@@ -25,7 +25,10 @@ export class ZoneRegistrationService {
 
     // DEV 계정 확인
     const devKey = this.config.get<string>('DEV');
-
+    if (!devKey) {
+      throw new Error('DEV configuration is not set');
+    }
+    
     return await this.dataSource.transaction(async (manager) => {
       const zoneRepo = manager.getRepository(ZoneEntity);
 
