@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,8 +17,6 @@ async function bootstrap() {
     methods: 'GET,POST,PUT,PATCH,DELETE',
     credentials: true, // 쿠키 허용 시
   });
-
-  app.useWebSocketAdapter(new WsAdapter(app));
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
