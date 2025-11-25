@@ -7,6 +7,8 @@ import { ZoneRepository } from '../../DB/repository/zone.repository';
 import { ZoneRegistrationService } from './service/zone.registration.service';
 import { ZoneDevCreateService } from './service/zone.dev.create.service';
 import { ZoneCreateService } from './service/zone.create.service';
+import { ZoneListViewService } from './service/zone.listview.service';
+import { ZoneDeleteService } from './service/zone.delete.service';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ZoneCreateService } from './service/zone.create.service';
     ZoneRegistrationService,
     ZoneDevCreateService,
     ZoneCreateService,
+    ZoneListViewService,
+    ZoneDeleteService,
   ],
   exports: [ZoneRepository], // 다른 모듈에서 사용할 경우
 })

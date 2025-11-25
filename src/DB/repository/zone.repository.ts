@@ -36,9 +36,12 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     return this.save(newZone);
   }
 
-  // 구획 삭제
-  async deleteZone(zoneId: string): Promise<boolean> {
-    const result = await this.delete({ zoneId });
+  // zoneId와 userId로 소유자 확인 후 삭제
+  async deleteByZoneIdAndUserId(
+    zoneId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const result = await this.delete({ zoneId, userId });
     return (result.affected ?? 0) > 0;
   }
 
