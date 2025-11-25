@@ -18,7 +18,7 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     userId: string,
     zoneId: string,
   ): Promise<ZoneEntity | null> {
-    return this.findOne({ where: { userId, zoneId } });
+    return this.findOne({ where: { userId: userId, zoneId: zoneId } });
   }
 
   // 구획 생성
