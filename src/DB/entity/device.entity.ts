@@ -30,4 +30,7 @@ export class DeviceEntity {
 
   @Column({ default: true })
   onConnect: boolean;
+
+  @Column({ default: 1 })
+  growthLevel: number;
 }

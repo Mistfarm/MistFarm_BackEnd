@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ZoneModule } from './domain/zone/zone.module';
 import { DeviceSubscriber } from './domain/device/device.subscriber';
+import { AiModule } from './domain/ai/ai.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DeviceSubscriber } from './domain/device/device.subscriber';
     NoticeModule,
     DataBaseModule,
     ZoneModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

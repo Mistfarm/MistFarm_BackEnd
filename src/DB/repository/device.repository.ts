@@ -68,6 +68,12 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     }
   }
 
+  async saveGrowthLevel(deviceId: number, growthLevel: number) {
+    const device = await this.findOne({ where: { deviceId } });
+    if (device) {
+      device.growthLevel = growthLevel;
+      void this.save(device);
+    }
   async deleteByZoneAndDeviceIds(
     zoneId: string,
     deviceIds: number[],
