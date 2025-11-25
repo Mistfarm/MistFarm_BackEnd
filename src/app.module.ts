@@ -8,8 +8,7 @@ import { NoticeModule } from './domain/notice/notice.module';
 import { DataBaseModule } from './DB/data.base.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './DB/entity/user.entity';
-import { TokenEntity } from './DB/entity/token.entity';
+import { ZoneModule } from './domain/zone/zone.module';
 
 @Module({
   imports: [
@@ -29,6 +28,7 @@ import { TokenEntity } from './DB/entity/token.entity';
     PlantModule,
     NoticeModule,
     DataBaseModule,
+    ZoneModule,
   ],
   controllers: [AppController],
   providers: [AppService],

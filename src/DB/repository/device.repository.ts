@@ -23,7 +23,7 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async deleteDevice(id: string): Promise<boolean> {
-    const result = await this.delete({ id });
+    const result = await this.delete({ deviceId: id });
     return (result.affected ?? 0) > 0;
   }
 

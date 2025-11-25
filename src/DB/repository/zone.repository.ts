@@ -14,11 +14,11 @@ export class ZoneRepository extends Repository<ZoneEntity> {
   }
 
   // 특정 사용자의 구획 이름으로 조회
-  async findByNameAndUserId(
+  async findByZoneIdAndUserId(
     userId: string,
     zoneId: string,
   ): Promise<ZoneEntity | null> {
-    return this.findOne({ where: { userId, id: zoneId } });
+    return this.findOne({ where: { userId: userId, id: zoneId } });
   }
 
   // 구획 생성
@@ -26,12 +26,12 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     const newZone = this.create({
       userId: zone.userId,
       zoneName: zone.zoneName,
-      plants: zone.plants ?? 'none',
-      autoFogMode: zone.autoFogMode ?? false,
-      autoFogOnTime: zone.autoFogOnTime ?? '00:00:00',
-      autoFogOffTime: zone.autoFogOffTime ?? '00:00:00',
-      fogPower: zone.fogPower ?? false,
-      nutrient: zone.nutrient ?? 0,
+      plants: zone.plants,
+      autoFogMode: zone.autoFogMode,
+      autoFogOnTime: zone.autoFogOnTime,
+      autoFogOffTime: zone.autoFogOffTime,
+      fogPower: zone.fogPower,
+      nutrient: zone.nutrient,
     });
     return this.save(newZone);
   }
@@ -47,7 +47,8 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     userId: string,
     zoneName: string,
   ): Promise<boolean> {
-    const count = await this.count({ where: { userId, zoneName } });
-    return count > 0;
+    return await this.exist({
+      where: { userId, zoneName },
+    });
   }
 }

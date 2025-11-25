@@ -7,13 +7,13 @@ import {
 } from 'typeorm';
 import { ZoneEntity } from './zone.entity';
 
-@Entity({ name: 'device' })
+@Entity()
 export class DeviceEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  deviceId: string;
 
   @Column({ type: 'varchar', length: 255 })
-  deviceId: string;
+  deviceName: string;
 
   @Column({ name: 'zone_id' })
   zoneId: string;
