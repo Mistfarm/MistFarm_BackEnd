@@ -55,8 +55,9 @@ export class DeviceService {
       (info.payload.lon !== 0 && !info.payload.lon) ||
       (info.payload.humidity !== 0 && !info.payload.humidity) ||
       (info.payload.temperature !== 0 && !info.payload.temperature)
-    )
-      ws.send(JSON.stringify({ error: '400 Bad Request' }));
+    ) {
+      ws.close(1008, '400 Bad Request');
+    }
     return info;
   }
   deviceInfo(deviceId: number, deviceInfoDto: DeviceInfoDto) {
@@ -66,7 +67,6 @@ export class DeviceService {
     device.temperature = deviceInfoDto.payload.temperature;
     device.latitude = deviceInfoDto.payload.lat;
     device.longitude = deviceInfoDto.payload.lon;
-
     void this.deviceRepository.saveInfo(device);
   }
   delete(deviceId: number) {

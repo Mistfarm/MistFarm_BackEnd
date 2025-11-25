@@ -14,7 +14,7 @@ export class DeviceGateway implements OnModuleInit, OnModuleDestroy {
 
     this.wss = new WebSocketServer({ server });
 
-    server.listen(3000, () => {});
+    server.listen(process.env.WSPORT ?? 3001, () => {});
     this.wss.on('connection', (ws: WebSocket, req) => {
       this.deviceService.connection(ws, req);
     });

@@ -6,12 +6,15 @@ export class DeviceEntity {
   @PrimaryColumn()
   deviceId: number;
 
+  @Column({ name: 'zone_id', nullable: true, default: null })
+  zoneId?: string | null;
+
   @Column()
   deviceName: string;
 
-  @ManyToOne(() => ZoneEntity, { nullable: true })
+  @ManyToOne(() => ZoneEntity)
   @JoinColumn({ name: 'zone_id' })
-  zone: ZoneEntity | undefined;
+  zone?: ZoneEntity | null;
 
   @Column({ type: 'float' })
   temperature: number;

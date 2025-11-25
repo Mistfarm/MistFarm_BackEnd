@@ -53,6 +53,14 @@ export class DeviceRepository extends Repository<DeviceEntity> {
       device.latitude = info.latitude;
       device.longitude = info.longitude;
       return this.save(device);
+    } else {
+      const newDevice = new DeviceEntity();
+      newDevice.deviceId = info.deviceId;
+      newDevice.humidity = info.humidity;
+      newDevice.temperature = info.temperature;
+      newDevice.latitude = info.latitude;
+      newDevice.longitude = info.longitude;
+      return this.createDevice(newDevice);
     }
   }
 }
