@@ -8,5 +8,5 @@ export class ZoneCreateDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  deviceIds: string[];
+  deviceIds: number[];
 }
