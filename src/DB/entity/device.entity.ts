@@ -6,9 +6,6 @@ export class DeviceEntity {
   @PrimaryColumn()
   deviceId: number;
 
-  @Column({ name: 'zone_id' })
-  zoneId: string;
-
   @Column()
   deviceName: string;
 
