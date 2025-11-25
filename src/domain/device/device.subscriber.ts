@@ -24,7 +24,7 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     // nutrient 변경 감지
     if (updatedCols.includes('nutrient')) {
       const newNutrient = entity.nutrient;
-      this.onNutrientChange(entity.id, newNutrient);
+      this.onNutrientChange(entity.zoneId, newNutrient);
     }
 
     //mode 변경감지
@@ -33,16 +33,16 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
       if (newMode) {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
-        this.onNotAutoFogChange(entity.id, newFogOnTime, newFogOffTime);
+        this.onNotAutoFogChange(entity.zoneId, newFogOnTime, newFogOffTime);
       } else {
         const newPower = entity.fogPower;
-        this.onAutoFogChange(entity.id, newPower);
+        this.onAutoFogChange(entity.zoneId, newPower);
       }
     } else {
       // fogPower 변경 감지
       if (updatedCols.includes('fogPower')) {
         const newFogPower = entity.fogPower;
-        this.onAutoFogChange(entity.id, newFogPower);
+        this.onAutoFogChange(entity.zoneId, newFogPower);
       }
 
       //fog-interval 변경감지
@@ -52,7 +52,7 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
       ) {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
-        this.onNotAutoFogChange(entity.id, newFogOnTime, newFogOffTime);
+        this.onNotAutoFogChange(entity.zoneId, newFogOnTime, newFogOffTime);
       }
     }
   }
