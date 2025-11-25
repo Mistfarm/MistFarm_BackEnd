@@ -17,6 +17,10 @@ export class DeviceRepository extends Repository<DeviceEntity> {
   }
 
   async createDevice(device: DeviceEntity): Promise<DeviceEntity> {
+    if (!device.deviceName) {
+      const count = await this.count();
+      device.deviceName = `기기${count + 1}`;
+    }
     const newDevice = this.create(device);
     return this.save(newDevice);
   }
