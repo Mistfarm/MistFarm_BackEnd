@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Put } from '@nestjs/common';
+import { PlantService } from './plant.service';
+import { PlantNutrientDto } from './dto/plant.nutrient.dto';
 
-@Controller('plant')
-export class PlantController {}
+@Controller()
+export class PlantController {
+  constructor(private readonly plantService: PlantService) {}
+  @Put('/zone/setting/nutrient')
+  async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
+    await this.plantService.setterNutrient(nutrientDto);
+  }
+}
