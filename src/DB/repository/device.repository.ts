@@ -13,8 +13,8 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     return this.find({ where: { zoneId } });
   }
 
-  async findByDeviceId(deviceId: string): Promise<DeviceEntity | null> {
-    return this.findOne({ where: { deviceId } });
+  async findByDeviceName(deviceName: string): Promise<DeviceEntity | null> {
+    return this.findOne({ where: { deviceName } });
   }
 
   async createDevice(device: DeviceEntity): Promise<DeviceEntity> {
@@ -22,13 +22,13 @@ export class DeviceRepository extends Repository<DeviceEntity> {
     return this.save(newDevice);
   }
 
-  async deleteDevice(id: string): Promise<boolean> {
-    const result = await this.delete({ id });
+  async deleteDevice(deviceId: number): Promise<boolean> {
+    const result = await this.delete({ deviceId });
     return (result.affected ?? 0) > 0;
   }
 
-  async existsByDeviceId(deviceId: string): Promise<boolean> {
-    const count = await this.count({ where: { deviceId } });
+  async existsByDeviceName(deviceName: string): Promise<boolean> {
+    const count = await this.count({ where: { deviceName } });
     return count > 0;
   }
 }
