@@ -14,8 +14,8 @@ import { ZoneRegistrationService } from './service/zone.registration.service';
 import { ZoneDevCreateService } from './service/zone.dev.create.service';
 import { ZoneDevCreateDto } from './dto/zone.dev.create.dto';
 import { AuthJwtGuard } from '../auth/jwt/auth.jwt.guard';
-import { ZoneCreateDto } from './dto/zone.create.dto';
 import { ZoneCreateService } from './service/zone.create.service';
+import { ZoneCreateDto } from './dto/zone.create.dto';
 
 @Controller()
 @UseGuards(AuthJwtGuard)
@@ -44,14 +44,18 @@ export class ZoneController {
     @CurrentUser() user: UserEntity,
     @Body() registrationDto: ZoneRegistrationDto,
   ): Promise<void> {
-    await this.zoneRegistrationService.registerZone(user.id, registrationDto);
+    await this.zoneRegistrationService.registerZone(
+      user.user_id,
+      registrationDto,
+    );
   }
 
   @Post('/zone')
+  @HttpCode(HttpStatus.OK)
   async createZone(
     @CurrentUser() user: UserEntity,
     @Body() zoneCreateDto: ZoneCreateDto,
-  ): Promise<void> {
+  ) {
     await this.zoneCreateService.createZone(user.user_id, zoneCreateDto);
   }
 }
