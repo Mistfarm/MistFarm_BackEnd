@@ -27,4 +27,7 @@ export class DeviceEntity {
 
   @Column({ type: 'decimal', precision: 11, scale: 8 })
   longitude: number; // 경도: -180 ~ 180
+
+  @Column({ default: false })
+  onConnect: boolean;
 }
