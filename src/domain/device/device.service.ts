@@ -67,10 +67,10 @@ export class DeviceService {
     device.latitude = deviceInfoDto.payload.lat;
     device.longitude = deviceInfoDto.payload.lon;
 
-    this.deviceRepository.saveInfo(device);
+    void this.deviceRepository.saveInfo(device);
   }
   delete(deviceId: number) {
     this.connections.delete(deviceId);
-    this.deviceRepository.disconnectDevice(deviceId);
+    void this.deviceRepository.disconnectDevice(deviceId);
   }
 }
