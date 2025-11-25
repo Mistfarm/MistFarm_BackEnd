@@ -2,7 +2,7 @@ import { IsString, IsNotEmpty, MinLength } from 'class-validator';
 
 export class ZoneRegistrationDto {
   @IsString()
-  @IsNotEmpty({ message: 'zone_register_id는 필수입니다.' })
+  @IsNotEmpty()
   zoneAuthId: string;
 
   @IsString()
