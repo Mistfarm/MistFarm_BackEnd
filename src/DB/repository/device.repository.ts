@@ -74,6 +74,7 @@ export class DeviceRepository extends Repository<DeviceEntity> {
       device.growthLevel = growthLevel;
       void this.save(device);
     }
+  }
   async deleteByZoneAndDeviceIds(
     zoneId: string,
     deviceIds: number[],

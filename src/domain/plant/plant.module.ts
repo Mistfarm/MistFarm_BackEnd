@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
 import { PlantController } from './plant.controller';
+import { ZonePlantServiceByHannah } from './service/plant.select.service';
+import { ZoneRepository } from '../../DB/repository/zone.repository';
+import { DeviceRepository } from '../../DB/repository/device.repository';
 import { PlantService } from './plant.service';
 
 @Module({
   controllers: [PlantController],
-  providers: [PlantService],
-import { ZonePlantServiceByHannah } from './service/plant.select.service';
-import { ZoneRepository } from '../../DB/repository/zone.repository';
-import { DeviceRepository } from '../../DB/repository/device.repository';
-
-@Module({
-  controllers: [PlantController],
-  providers: [ZonePlantServiceByHannah, ZoneRepository, DeviceRepository],
+  providers: [
+    ZonePlantServiceByHannah,
+    ZoneRepository,
+    DeviceRepository,
+    PlantService,
+  ],
   exports: [ZonePlantServiceByHannah],
 })
 export class PlantModule {}

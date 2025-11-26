@@ -1,14 +1,5 @@
-import { Body, Controller, Put } from '@nestjs/common';
 import { PlantService } from './plant.service';
 import { PlantNutrientDto } from './dto/plant.nutrient.dto';
-
-@Controller()
-export class PlantController {
-  constructor(private readonly plantService: PlantService) {}
-  @Put('/zone/setting/nutrient')
-  async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
-    await this.plantService.setterNutrient(nutrientDto);
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -30,9 +21,10 @@ import { AuthJwtGuard } from '../auth/jwt/auth.jwt.guard';
 import { ZoneSettingQueryDto } from './dto/plant.zone-setting.dto';
 import { ZoneModeUpdateDto } from './dto/ZoneModeUpdateDto';
 
+
 @Controller('plant')
 export class PlantController {
-  constructor(private readonly plantService: ZonePlantServiceByHannah) {}
+  constructor(private readonly zonePlantServiceByHannah: ZonePlantServiceByHannah, private readonly plantService: PlantService) {}
 
   @Post('/zone/plant')
   @HttpCode(HttpStatus.OK)
@@ -41,7 +33,7 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Body() dto: ZonePlantSelectDto,
   ) {
-    return await this.plantService.selectPlant(user.user_id, dto);
+    return await this.zonePlantServiceByHannah.selectPlant(user.user_id, dto);
   }
 
   @UseGuards(AuthJwtGuard)
@@ -51,7 +43,7 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Query() query: ZoneSettingQueryDto,
   ) {
-    return this.plantService.getZoneSetting(user.user_id, query);
+    return this.zonePlantServiceByHannah.getZoneSetting(user.user_id, query);
   }
 
   @UseGuards(AuthJwtGuard)
@@ -61,7 +53,12 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Body() dto: ZoneModeUpdateDto,
   ) {
-    await this.plantService.updateMode(user.user_id, dto);
+    await this.zonePlantServiceByHannah.updateMode(user.user_id, dto);
     return {}; // body 비워도 OK
+  }
+
+  @Put('/zone/setting/nutrient')
+  async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
+    await this.plantService.setterNutrient(nutrientDto);
   }
 }
