@@ -21,8 +21,7 @@ import { AuthJwtGuard } from '../auth/jwt/auth.jwt.guard';
 import { ZoneSettingQueryDto } from './dto/plant.zone-setting.dto';
 import { ZoneModeUpdateDto } from './dto/ZoneModeUpdateDto';
 
-
-@Controller('plant')
+@Controller()
 export class PlantController {
   constructor(private readonly zonePlantServiceByHannah: ZonePlantServiceByHannah, private readonly plantService: PlantService) {}
 
