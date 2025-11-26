@@ -14,16 +14,19 @@ import {
 import { CurrentUser } from '../auth/decorater/decorator.user';
 import { UserEntity } from '../../DB/entity/user.entity';
 import { ZonePlantSelectDto } from './dto/plant.select.dto';
-import {
-  ZonePlantServiceByHannah,
-} from './service/plant.select.service';
+import { ZonePlantServiceByHannah } from './service/plant.select.service';
 import { AuthJwtGuard } from '../auth/jwt/auth.jwt.guard';
 import { ZoneSettingQueryDto } from './dto/plant.zone-setting.dto';
 import { ZoneModeUpdateDto } from './dto/ZoneModeUpdateDto';
+import { PlantFogCycleDto } from './dto/plant.fog.cycle.dto';
+import { PlantFogPowerDto } from './dto/plant.fog.power.dto';
 
 @Controller()
 export class PlantController {
-  constructor(private readonly zonePlantServiceByHannah: ZonePlantServiceByHannah, private readonly plantService: PlantService) {}
+  constructor(
+    private readonly zonePlantServiceByHannah: ZonePlantServiceByHannah,
+    private readonly plantService: PlantService,
+  ) {}
 
   @Post('/zone/plant')
   @HttpCode(HttpStatus.OK)
@@ -59,5 +62,15 @@ export class PlantController {
   @Put('/zone/setting/nutrient')
   async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
     await this.plantService.setterNutrient(nutrientDto);
+  }
+
+  @Put('/zone/setting/fog-cycle')
+  async setterFogCycle(@Body() plantFogCycleDto: PlantFogCycleDto) {
+    await this.plantService.fogCycleSetter(plantFogCycleDto);
+  }
+
+  @Put('/zone/setting/fog-power')
+  async setterFogPower(@Body() plantFogPowerDto: PlantFogPowerDto) {
+    await this.plantService.fogPowerSetter(plantFogPowerDto);
   }
 }
