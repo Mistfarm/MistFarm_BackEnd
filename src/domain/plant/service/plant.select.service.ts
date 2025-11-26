@@ -75,26 +75,26 @@ export class ZonePlantServiceByHannah {
     // 4. 자동 모드
     if (zone.autoFogMode) {
       return {
-        growth_level: avgGrowth,
+        growthLevel: avgGrowth,
         humidity: avgHumidity,
         temperature: avgTemperature,
         plant: zone.plants,
         mode: true,
-        on_interval: zone.autoFogOnTime,
-        off_interval: zone.autoFogOffTime,
-        nutrients_rate: zone.nutrient,
+        onInterval: zone.autoFogOnTime,
+        offInterval: zone.autoFogOffTime,
+        nutrientsRate: zone.nutrient,
       };
     }
 
     // 5. 수동 모드
     return {
-      growth_level: avgGrowth,
+      growthLevel: avgGrowth,
       humidity: avgHumidity,
       temperature: avgTemperature,
       plant: zone.plants,
       mode: false,
       power: zone.fogPower,
-      nutrients_rate: zone.nutrient,
+      nutrientsRate: zone.nutrient,
     };
   }
   async updateMode(userId: string, dto: ZoneModeUpdateDto): Promise<void> {
