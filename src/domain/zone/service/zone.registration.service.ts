@@ -41,11 +41,11 @@ export class ZoneRegistrationService {
       }
 
       // 비밀번호 검증
-      const isPasswordValid = await bcrypt.compare(zonePw, zone.zonePassword);
+      /*const isPasswordValid = await bcrypt.compare(zonePw, zone.zonePassword);
 
       if (!isPasswordValid) {
         throw new UnauthorizedException('구획 비밀번호가 올바르지 않습니다.');
-      }
+      }*/
 
       // userId 업데이트 (DEV → 실제 사용자)
       zone.userId = userId;
