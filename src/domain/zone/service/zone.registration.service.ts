@@ -22,13 +22,6 @@ export class ZoneRegistrationService {
     zoneRegistrationDto: ZoneRegistrationDto,
   ): Promise<ZoneEntity> {
     const { zoneAuthId, zonePw } = zoneRegistrationDto;
-
-    // DEV 계정 확인
-    const devKey = this.config.get<string>('DEV');
-    if (!devKey) {
-      throw new Error('DEV configuration is not set');
-    }
-    
     return await this.dataSource.transaction(async (manager) => {
       const zoneRepo = manager.getRepository(ZoneEntity);
 
@@ -43,15 +36,12 @@ export class ZoneRegistrationService {
       }
 
       // 이미 다른 사용자가 등록했는지 체크
-      if (zone.userId !== devKey) {
+      if (zone.userId) {
         throw new ConflictException('이미 다른 사용자가 등록한 구획입니다.');
       }
 
       // 비밀번호 검증
-      const isPasswordValid = await bcrypt.compare(
-        zonePw,
-        zone.zonePassword,
-      );
+      const isPasswordValid = await bcrypt.compare(zonePw, zone.zonePassword);
 
       if (!isPasswordValid) {
         throw new UnauthorizedException('구획 비밀번호가 올바르지 않습니다.');
@@ -61,9 +51,7 @@ export class ZoneRegistrationService {
       zone.userId = userId;
       zone.isNotUsed = false;
 
-      const savedZone = await zoneRepo.save(zone);
-
-      return savedZone;
+      return await zoneRepo.save(zone);
     });
   }
 }
