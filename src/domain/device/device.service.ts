@@ -83,4 +83,8 @@ export class DeviceService {
     const ws = this.connections.get(deviceId);
     if (ws) ws.send(JSON.stringify({ type, payload }));
   }
+
+  isConnect(deviceId: number) {
+    return this.connections.has(deviceId);
+  }
 }
