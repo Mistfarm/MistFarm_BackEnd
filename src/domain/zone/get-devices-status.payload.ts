@@ -1,0 +1,3 @@
+interface GetDevicesStatusPayload {
+  zoneId: string;
+}

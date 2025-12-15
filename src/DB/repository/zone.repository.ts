@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { ZoneEntity } from '../entity/zone.entity';
+import { UUID } from 'node:crypto';
 
 @Injectable()
 export class ZoneRepository extends Repository<ZoneEntity> {
@@ -11,6 +12,10 @@ export class ZoneRepository extends Repository<ZoneEntity> {
   // 사용자의 모든 구획 조회
   async findByUserId(userId: string): Promise<ZoneEntity[]> {
     return this.find({ where: { userId } });
+  }
+
+  async findOneByZoneId(zoneId: string): Promise<ZoneEntity | null> {
+    return this.findOne({ where: { zoneId } });
   }
 
   // 특정 사용자의 구획 ID로 조회
@@ -73,5 +78,4 @@ export class ZoneRepository extends Repository<ZoneEntity> {
       .andWhere('zone.isNotUsed = :flag', { flag: true })
       .getOne();
   }
-
 }

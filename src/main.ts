@@ -18,6 +18,7 @@ async function bootstrap() {
     credentials: true, // 쿠키 허용 시
   });
 
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
