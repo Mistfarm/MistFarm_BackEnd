@@ -16,16 +16,28 @@ export class DeviceEntity {
   @JoinColumn({ name: 'zone_id' })
   zone?: ZoneEntity | null;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', default: null, nullable: true })
   temperature: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', default: null, nullable: true })
   humidity: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 8 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 8,
+    default: null,
+    nullable: true,
+  })
   latitude: number; // 위도: -90 ~ 90
 
-  @Column({ type: 'decimal', precision: 11, scale: 8 })
+  @Column({
+    type: 'decimal',
+    precision: 11,
+    scale: 8,
+    default: null,
+    nullable: true,
+  })
   longitude: number; // 경도: -180 ~ 180
 
   @Column({ default: true })

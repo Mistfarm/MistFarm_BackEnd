@@ -29,6 +29,7 @@ import { DeviceDeleteByZoneDto } from './dto/zone.device.delete.dto';
 import { DeviceDeleteByZoneService } from './service/zone.device.delete.service';
 import { DeviceUpdateZoneDto } from './dto/device.update-zone.dto';
 import { DeviceUpdateZoneService } from './service/device.update-zone.service';
+import { DevicesDevCreateService } from './service/device.dev-create.service';
 
 @Controller()
 @UseGuards(AuthJwtGuard)
@@ -42,6 +43,7 @@ export class ZoneController {
     private readonly zoneDeviceListService: ZoneDeviceListService,
     private readonly deviceDeleteService: DeviceDeleteByZoneService,
     private readonly deviceUpdateService: DeviceUpdateZoneService,
+    private readonly createDevices: DevicesDevCreateService,
   ) {}
 
   @Post('/zone/developer/I-am-so-happy')
@@ -113,5 +115,14 @@ export class ZoneController {
     @Body() dto: DeviceUpdateZoneDto,
   ) {
     await this.deviceUpdateService.updateDeviceZone(user.user_id, dto);
+  }
+
+  @Post('/zone/devices')
+  @HttpCode(HttpStatus.OK)
+  async createDevDevice(
+    @CurrentUser() user: UserEntity,
+    @Body() dto: DevicesResponse,
+  ) {
+    await this.createDevices.createDevices(dto, user);
   }
 }

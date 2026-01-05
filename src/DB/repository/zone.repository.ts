@@ -13,6 +13,10 @@ export class ZoneRepository extends Repository<ZoneEntity> {
     return this.find({ where: { userId } });
   }
 
+  async findByzoneRegisterId(zoneRegisterId: string): Promise<ZoneEntity | null> {
+    return this.findOne({ where: { zoneRegisterId } });
+  }
+
   // 특정 사용자의 구획 ID로 조회
   async findByZoneIdAndUserId(
     userId: string,
@@ -73,5 +77,4 @@ export class ZoneRepository extends Repository<ZoneEntity> {
       .andWhere('zone.isNotUsed = :flag', { flag: true })
       .getOne();
   }
-
 }

@@ -1,7 +1,7 @@
 import {
   ConflictException,
   Injectable,
-  Logger, NotFoundException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ZoneRepository } from '../../../DB/repository/zone.repository';
@@ -9,9 +9,7 @@ import { ZoneEntity } from '../../../DB/entity/zone.entity';
 import * as bcrypt from 'bcrypt';
 import { ZoneDevCreateDto } from '../dto/zone.dev.create.dto';
 import { ConfigService } from '@nestjs/config';
-import { DeviceService } from '../../device/device.service';
 import { DeviceRepository } from '../../../DB/repository/device.repository';
-import { DeviceEntity } from '../../../DB/entity/device.entity';
 
 @Injectable()
 export class ZoneDevCreateService {
@@ -71,7 +69,6 @@ export class ZoneDevCreateService {
         await this.deviceRepo.save(device);
       }
     }
-
     return savedZone;
   }
 }

@@ -128,4 +128,27 @@ export class DeviceRepository extends Repository<DeviceEntity> {
       .andWhere('zone.isNotUsed = true')
       .getMany();
   }
+
+  async createDevices(
+    devices: {
+      deviceId: number;
+      deviceName?: string;
+    }[],
+  ): Promise<DeviceEntity[]> {
+    const entities: DeviceEntity[] = [];
+
+    for (const device of devices) {
+      const entity = new DeviceEntity();
+      entity.deviceId = device.deviceId;
+      if (device.deviceName != null) {
+        entity.deviceName = device.deviceName;
+      }
+
+      // 기존 단일 생성 로직 재사용
+      const saved = await this.createDevice(entity);
+      entities.push(saved);
+    }
+
+    return entities;
+  }
 }
