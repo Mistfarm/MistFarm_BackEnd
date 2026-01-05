@@ -13,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 @WebSocketGateway({
   namespace: '/zone/devices',
   cors: {
-    origin: true,
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
     credentials: true,
   },
 })
