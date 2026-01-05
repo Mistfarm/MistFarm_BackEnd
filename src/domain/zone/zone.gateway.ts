@@ -51,33 +51,41 @@ export class ZoneDeviceGateway {
     @MessageBody() data: { zoneId: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const userId = this.extractUserId(client);
-    const { zoneId } = data;
+    try {
+      const userId = this.extractUserId(client);
+      const { zoneId } = data;
 
-    if (!zoneId) {
-      throw new WsException('zoneId가 필요합니다');
+      if (!zoneId) {
+        throw new WsException('zoneId가 필요합니다');
+      }
+
+      // 구획 소유권 검증
+      const zone = await this.zoneRepo.findByZoneIdAndUserId(userId, zoneId);
+      if (!zone) {
+        throw new WsException('접근 권한이 없는 구획입니다');
+      }
+
+      // 기기 조회
+      const devices = await this.deviceRepo.findByZoneId(zoneId);
+
+      // 응답 포맷 가공
+      const payload = {
+        devices: devices.map((device) => ({
+          deviceName: device.deviceName,
+          connected: device.onConnect,
+          lat: device.latitude,
+          lon: device.longitude,
+        })),
+      };
+
+      // 클라이언트 전송
+      client.emit('devices-status-update', payload);
+    } catch (error) {
+      if (error instanceof WsException) {
+        throw error;
+      }
+      console.error('기기 상태 조회 중 오류:', error);
+      throw new WsException('기기 상태를 조회하는 중 오류가 발생했습니다');
     }
-
-    // 구획 소유권 검증
-    const zone = await this.zoneRepo.findByZoneIdAndUserId(userId, zoneId);
-    if (!zone) {
-      throw new WsException('접근 권한이 없는 구획입니다');
-    }
-
-    // 기기 조회
-    const devices = await this.deviceRepo.findByZoneId(zoneId);
-
-    // 응답 포맷 가공
-    const payload = {
-      devices: devices.map((device) => ({
-        deviceName: device.deviceName,
-        connected: device.onConnect,
-        lat: device.latitude,
-        lon: device.longitude,
-      })),
-    };
-
-    // 클라이언트 전송
-    client.emit('devices-status-update', payload);
   }
 }
