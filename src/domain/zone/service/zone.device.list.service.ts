@@ -10,6 +10,10 @@ export class ZoneDeviceListService {
     private readonly zoneRepo: ZoneRepository,
   ) {}
 
+  async createDevices() {
+    
+  }
+
   async getZoneDevicesByZone(
     userId: string,
     zoneId: string,
