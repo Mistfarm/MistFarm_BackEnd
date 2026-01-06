@@ -14,7 +14,14 @@ import { UserRepository } from '../../DB/repository/user.repository';
 @WebSocketGateway({
   namespace: '/zone/devices',
   cors: {
-    origin: process.env.ALLOWED_ORIGINS?.split(','),
+    origin: (origin, callback) => {
+      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   },
 })
