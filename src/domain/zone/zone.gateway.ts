@@ -48,8 +48,7 @@ export class ZoneDeviceGateway {
       const payload = this.jwtService.verify<{ id: string }>(token);
       return payload.id;
     } catch (error) {
-      console.error('JWT 검증 실패:', token);
-      console.error(error);
+      console.error('JWT 검증 실패:', error);
       throw new WsException('유효하지 않은 토큰입니다');
     }
   }
