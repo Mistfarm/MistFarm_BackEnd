@@ -30,7 +30,10 @@ export class ZoneEntity {
   @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
 
-  @ManyToOne(() => UserEntity, { nullable: true })
+  @ManyToOne(() => UserEntity, {
+    nullable: true,
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
