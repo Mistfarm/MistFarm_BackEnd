@@ -36,20 +36,7 @@ export class ZoneDeviceGateway {
   }
 
   // JWT 추출 및 사용자 검증
-  private extractUserId(client: Socket): string {
-    const authHeader = client.handshake.headers['authorization'];
-
-    if (!authHeader || Array.isArray(authHeader)) {
-      console.log('Authorization 헤더가 없습니다');
-      throw new WsException('Authorization 헤더가 없습니다');
-    }
-
-    const [type, token] = authHeader.split(' ');
-    if (type !== 'Bearer' || !token) {
-      console.log('토큰 형식이 올바르지 않습니다');
-      throw new WsException('토큰 형식이 올바르지 않습니다');
-    }
-
+  private extractUserId(token: string): string {
     try {
       const payload = this.jwtService.verify<{ id: string }>(token);
       return payload.id;
@@ -62,14 +49,18 @@ export class ZoneDeviceGateway {
   // get-devices-status 이벤트
   @SubscribeMessage('get-devices-status')
   async handleGetDevicesStatus(
-    @MessageBody() data: { zoneId: string },
+    @MessageBody()
+    data: {
+      zoneId: string;
+      token: string;
+    },
     @ConnectedSocket() client: Socket,
   ) {
     console.log('handleGetDevicesStatus 호출됨', data);
     console.log('get-devices-status 수신', data);
     try {
-      const userId = this.extractUserId(client);
-      const { zoneId } = data;
+      const userId = this.extractUserId(data.token);
+      const zoneId = data.zoneId;
       console.log('3. zoneId:', zoneId);
 
       if (!zoneId) {
