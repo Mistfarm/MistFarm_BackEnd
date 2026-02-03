@@ -13,12 +13,9 @@ import { Injectable } from '@nestjs/common';
 @EventSubscriber()
 export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
   constructor(
-    private readonly dataSource: DataSource,
     private readonly deviceService: DeviceService,
     private readonly deviceRepository: DeviceRepository,
-  ) {
-    this.dataSource.subscribers.push(this);
-  }
+  ) {}
   listenTo() {
     return ZoneEntity; // Zone 엔티티만 구독
   }
