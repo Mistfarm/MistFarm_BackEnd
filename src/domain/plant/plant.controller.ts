@@ -26,7 +26,9 @@ export class PlantController {
   constructor(
     private readonly zonePlantServiceByHannah: ZonePlantServiceByHannah,
     private readonly plantService: PlantService,
-  ) {}
+  ) {
+    console.log('🌱 PlantController 로드됨');
+  }
 
   @Post('/zone/plant')
   @HttpCode(HttpStatus.OK)
@@ -35,7 +37,17 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Body() dto: ZonePlantSelectDto,
   ) {
-    return await this.zonePlantServiceByHannah.selectPlant(user.user_id, dto);
+    console.log('📩 [POST /zone/plant] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
+    console.log('   - DTO:', dto);
+
+    const result = await this.zonePlantServiceByHannah.selectPlant(
+      user.user_id,
+      dto,
+    );
+
+    console.log('   👉 selectPlant 결과:', result);
+    return result;
   }
 
   @UseGuards(AuthJwtGuard)
@@ -45,7 +57,17 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Query() query: ZoneSettingQueryDto,
   ) {
-    return this.zonePlantServiceByHannah.getZoneSetting(user.user_id, query);
+    console.log('📩 [GET /zone/setting] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
+    console.log('   - 쿼리:', query);
+
+    const result = await this.zonePlantServiceByHannah.getZoneSetting(
+      user.user_id,
+      query,
+    );
+
+    console.log('   👉 getZoneSetting 결과:', result);
+    return result;
   }
 
   @UseGuards(AuthJwtGuard)
@@ -55,22 +77,46 @@ export class PlantController {
     @CurrentUser() user: UserEntity,
     @Body() dto: ZoneModeUpdateDto,
   ) {
+    console.log('📩 [PUT /zone/setting/mode] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
+    console.log('   - mode DTO:', dto);
+
     await this.zonePlantServiceByHannah.updateMode(user.user_id, dto);
+
+    console.log('   👉 updateMode 완료');
     return {}; // body 비워도 OK
   }
 
   @Put('/zone/setting/nutrient')
   async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
-    await this.plantService.setterNutrient(nutrientDto);
+    console.log('📩 [PUT /zone/setting/nutrient] 요청 수신');
+    console.log('   - nutrient DTO:', nutrientDto);
+
+    const result = await this.plantService.setterNutrient(nutrientDto);
+
+    console.log('   👉 setterNutrient 결과:', result);
+    return result;
   }
 
   @Put('/zone/setting/fog-cycle')
   async setterFogCycle(@Body() plantFogCycleDto: PlantFogCycleDto) {
-    await this.plantService.fogCycleSetter(plantFogCycleDto);
+    console.log('📩 [PUT /zone/setting/fog-cycle] 요청 수신');
+    console.log('   - fog cycle DTO:', plantFogCycleDto);
+
+    const result = await this.plantService.fogCycleSetter(plantFogCycleDto);
+
+    console.log('   👉 fogCycleSetter 결과:', result);
+    return result;
   }
 
   @Put('/zone/setting/fog-power')
   async setterFogPower(@Body() plantFogPowerDto: PlantFogPowerDto) {
-    await this.plantService.fogPowerSetter(plantFogPowerDto);
+    console.log('📩 [PUT /zone/setting/fog-power] 요청 수신');
+    console.log('   - fog power DTO:', plantFogPowerDto);
+
+    const result = await this.plantService.fogPowerSetter(plantFogPowerDto);
+
+    console.log('   👉 fogPowerSetter 결과:', result);
+    return result;
   }
 }
