@@ -17,14 +17,14 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     return ZoneEntity; // Zone 엔티티만 구독
   }
 
-  afterUpdate(event: UpdateEvent<ZoneEntity>) {
+  async afterUpdate(event: UpdateEvent<ZoneEntity>) {
     // 이번 업데이트에서 어떤 컬럼이 바뀌었는지 확인
     const updatedCols = event.updatedColumns.map((col) => col.propertyName);
     const entity = event.entity as ZoneEntity;
     // nutrient 변경 감지
     if (updatedCols.includes('nutrient')) {
       const newNutrient = entity.nutrient;
-      this.onNutrientChange(entity.zoneId, newNutrient);
+      await this.onNutrientChange(entity.zoneId, newNutrient);
     }
 
     //mode 변경감지
@@ -33,16 +33,20 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
       if (newMode) {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
-        this.onNotAutoFogChange(entity.zoneId, newFogOnTime, newFogOffTime);
+        await this.onNotAutoFogChange(
+          entity.zoneId,
+          newFogOnTime,
+          newFogOffTime,
+        );
       } else {
         const newPower = entity.fogPower;
-        this.onAutoFogChange(entity.zoneId, newPower);
+        await this.onAutoFogChange(entity.zoneId, newPower);
       }
     } else {
       // fogPower 변경 감지
       if (updatedCols.includes('fogPower')) {
         const newFogPower = entity.fogPower;
-        this.onAutoFogChange(entity.zoneId, newFogPower);
+        await this.onAutoFogChange(entity.zoneId, newFogPower);
       }
 
       //fog-interval 변경감지
@@ -52,14 +56,18 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
       ) {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
-        this.onNotAutoFogChange(entity.zoneId, newFogOnTime, newFogOffTime);
+        await this.onNotAutoFogChange(
+          entity.zoneId,
+          newFogOnTime,
+          newFogOffTime,
+        );
       }
     }
   }
 
   // nutrient 변경 함수
-  onNutrientChange(zoneId: string, newValue: number | undefined) {
-    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+  async onNutrientChange(zoneId: string, newValue: number | undefined) {
+    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
         this.deviceService.send<{ nutrient: number | undefined }>(
           device.deviceId,
@@ -71,8 +79,8 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
   }
 
   // fogPower 변경 함수
-  onAutoFogChange(zoneId: string, newValue: boolean | undefined) {
-    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+  async onAutoFogChange(zoneId: string, newValue: boolean | undefined) {
+    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
         this.deviceService.send<{ mode: number; power: number | undefined }>(
           device.deviceId,
@@ -83,12 +91,12 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     });
   }
 
-  onNotAutoFogChange(
+  async onNotAutoFogChange(
     zoneId: string,
     newOnValue: string | undefined,
     newOffValue: string | undefined,
   ) {
-    this.deviceRepository.findByZoneId(zoneId).then((devices) => {
+    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
       devices.forEach((device) => {
         this.deviceService.send<{
           mode: number;
