@@ -6,7 +6,9 @@ import {
 import { ZoneEntity } from '../../DB/entity/zone.entity';
 import { DeviceService } from './device.service';
 import { DeviceRepository } from '../../DB/repository/device.repository';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 @EventSubscriber()
 export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
   constructor(
