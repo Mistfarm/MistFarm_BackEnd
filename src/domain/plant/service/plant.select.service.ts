@@ -35,11 +35,11 @@ export class ZonePlantServiceByHannah {
 
   async getZoneSetting(
     userId: string,
-    zoneId: string,
+    dto: ZoneSettingQueryDto,
   ): Promise<ZoneSettingResponseAuto | ZoneSettingResponseManual> {
     // 1. zone 조회 + user 검증
     const zone = await this.zoneRepo.findOne({
-      where: { zoneId, userId },
+      where: { zoneId: dto.zoneId, userId },
     });
 
     if (!zone) {
