@@ -49,7 +49,10 @@ export class ZoneDeviceGateway
     console.log('   - namespace:', client.nsp?.name);
     console.log('   - handshake address:', client.handshake?.address);
     console.log('   - handshake query:', client.handshake?.query);
-    console.log('   - handshake headers origin:', client.handshake?.headers?.origin);
+    console.log(
+      '   - handshake headers origin:',
+      client.handshake?.headers?.origin,
+    );
     // 메시지 기반 인증이므로 여기서는 토큰 검증 안 함
   }
 
