@@ -4,10 +4,12 @@ import { ZonePlantServiceByHannah } from './service/plant.select.service';
 import { ZoneRepository } from '../../DB/repository/zone.repository';
 import { DeviceRepository } from '../../DB/repository/device.repository';
 import { PlantService } from './plant.service';
+import { DeviceSubscriber } from '../device/device.subscriber';
 
 @Module({
   controllers: [PlantController],
   providers: [
+    DeviceSubscriber,
     ZonePlantServiceByHannah,
     ZoneRepository,
     DeviceRepository,
