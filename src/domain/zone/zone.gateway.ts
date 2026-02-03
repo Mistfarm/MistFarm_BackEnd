@@ -18,9 +18,13 @@ import { UserRepository } from '../../DB/repository/user.repository';
   cors: {
     origin: (origin, callback) => {
       const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
+      console.log('[CORS] origin:', origin);
+      console.log('[CORS] allowedOrigins:', allowedOrigins);
+
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log('[CORS] 차단된 origin:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -41,21 +45,30 @@ export class ZoneDeviceGateway
 
   // WebSocket 연결 시 호출
   handleConnection(client: Socket) {
-    console.log(`클라이언트 연결: ${client.id}`);
+    console.log(`✅ [WS CONNECT] 클라이언트 연결: ${client.id}`);
+    console.log('   - namespace:', client.nsp?.name);
+    console.log('   - handshake address:', client.handshake?.address);
+    console.log('   - handshake query:', client.handshake?.query);
+    console.log('   - handshake headers origin:', client.handshake?.headers?.origin);
     // 메시지 기반 인증이므로 여기서는 토큰 검증 안 함
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`클라이언트 연결 종료: ${client.id}`);
+    console.log(`❌ [WS DISCONNECT] 클라이언트 연결 종료: ${client.id}`);
   }
 
   // JWT 추출 및 사용자 검증
   private extractUserId(token: string): string {
+    console.log('🔐 [JWT] 토큰 검증 시작');
+    console.log('   - token length:', token?.length);
+
     try {
       const payload = this.jwtService.verify<{ id: string }>(token);
+      console.log('✅ [JWT] 검증 성공 payload:', payload);
       return payload.id;
     } catch (error) {
-      console.error('JWT 검증 실패:', error);
+      console.log('❌ [JWT] 검증 실패');
+      console.error(error);
       throw new WsException('유효하지 않은 토큰입니다');
     }
   }
@@ -66,34 +79,64 @@ export class ZoneDeviceGateway
     @MessageBody() data: { zoneId: string; token: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('get-devices-status 수신', data);
+    console.log('📩 [EVENT] get-devices-status 수신');
+    console.log('   - clientId:', client.id);
+    console.log('   - raw data:', data);
 
     const { token, zoneId } = data;
 
+    console.log('   - zoneId:', zoneId);
+    console.log('   - token exists:', !!token);
+
     if (!zoneId) {
+      console.log('❌ zoneId 누락');
       client.emit('error', { message: 'zoneId가 필요합니다' });
       throw new WsException('zoneId가 필요합니다');
     }
 
+    if (!token) {
+      console.log('❌ token 누락');
+      client.emit('error', { message: 'token이 필요합니다' });
+      throw new WsException('token이 필요합니다');
+    }
+
     try {
+      console.log('1) 사용자 추출 시작');
       const userId = this.extractUserId(token);
+      console.log('   - userId:', userId);
+
+      console.log('2) userRepo.findById 호출');
       const user = await this.userRepo.findById(userId);
+      console.log('   - user 조회 결과:', user);
 
       if (!user?.user_id) {
+        console.log('❌ user.user_id 없음 (사용자 조회 실패)');
         client.emit('error', { message: '사용자를 찾을 수 없습니다' });
         throw new WsException('사용자를 찾을 수 없습니다');
       }
+
+      console.log('3) zoneRepo.findByZoneIdAndUserId 호출');
+      console.log('   - user_id:', user.user_id);
+      console.log('   - zoneId:', zoneId);
 
       const zone = await this.zoneRepo.findByZoneIdAndUserId(
         user.user_id,
         zoneId,
       );
+      console.log('   - zone 조회 결과:', zone);
+
       if (!zone) {
+        console.log('❌ zone 없음 (권한 없음)');
         client.emit('error', { message: '접근 권한이 없는 구획입니다' });
         throw new WsException('접근 권한이 없는 구획입니다');
       }
 
+      console.log('4) deviceRepo.findByZoneId 호출');
       const devices = await this.deviceRepo.findByZoneId(zoneId);
+
+      console.log('   - devices count:', devices?.length ?? 0);
+      console.log('   - devices sample[0]:', devices?.[0]);
+
       const payload = {
         devices: devices.map((d) => ({
           deviceName: d.deviceName,
@@ -103,10 +146,20 @@ export class ZoneDeviceGateway
         })),
       };
 
+      console.log('5) devices-status-update emit');
+      console.log('   - payload:', payload);
+
       client.emit('devices-status-update', payload);
+
+      console.log('✅ 완료: devices-status-update 전송 성공');
     } catch (error) {
-      if (!(error instanceof WsException))
+      console.log('🔥 [ERROR] get-devices-status 처리 중 예외 발생');
+      console.log('   - is WsException:', error instanceof WsException);
+
+      if (!(error instanceof WsException)) {
         console.error('기기 상태 조회 오류:', error);
+      }
+
       throw error instanceof WsException
         ? error
         : new WsException('기기 상태 조회 중 오류');
