@@ -55,15 +55,15 @@ export class PlantController {
   @HttpCode(HttpStatus.OK)
   async getZoneSetting(
     @CurrentUser() user: UserEntity,
-    @Query() query: ZoneSettingQueryDto,
+    @Query('zone-id') zoneId: string,
   ) {
     console.log('📩 [GET /zone/setting] 요청 수신');
     console.log('   - 현재 유저:', user.user_id);
-    console.log('   - 쿼리:', query);
+    console.log('   - 쿼리:', zoneId);
 
     const result = await this.zonePlantServiceByHannah.getZoneSetting(
       user.user_id,
-      query,
+      zoneId,
     );
 
     console.log('   👉 getZoneSetting 결과:', result);
