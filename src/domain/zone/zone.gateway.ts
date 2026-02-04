@@ -30,6 +30,8 @@ import { UserRepository } from '../../DB/repository/user.repository';
     },
     credentials: true,
   },
+  transports: ['websocket', 'polling'], // 명시적 설정
+  path: '/socket.io', // Socket.IO 기본 경로
 })
 export class ZoneDeviceGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -40,10 +42,9 @@ export class ZoneDeviceGateway
     private readonly zoneRepo: ZoneRepository,
     private readonly jwtService: JwtService,
   ) {
-    console.log('0. ZoneDeviceGateway 로드됨');
+    console.log('✅ ZoneDeviceGateway 초기화 완료');
   }
 
-  // WebSocket 연결 시 호출
   handleConnection(client: Socket) {
     console.log(`✅ [WS CONNECT] 클라이언트 연결: ${client.id}`);
     console.log('   - namespace:', client.nsp?.name);
@@ -53,14 +54,12 @@ export class ZoneDeviceGateway
       '   - handshake headers origin:',
       client.handshake?.headers?.origin,
     );
-    // 메시지 기반 인증이므로 여기서는 토큰 검증 안 함
   }
 
   handleDisconnect(client: Socket) {
     console.log(`❌ [WS DISCONNECT] 클라이언트 연결 종료: ${client.id}`);
   }
 
-  // JWT 추출 및 사용자 검증
   private extractUserId(token: string): string {
     console.log('🔐 [JWT] 토큰 검증 시작');
     console.log('   - token length:', token?.length);
@@ -76,7 +75,6 @@ export class ZoneDeviceGateway
     }
   }
 
-  // get-devices-status 이벤트
   @SubscribeMessage('get-devices-status')
   async handleGetDevicesStatus(
     @MessageBody() data: { zoneId: string; token: string },
