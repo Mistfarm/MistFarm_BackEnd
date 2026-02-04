@@ -1,6 +1,7 @@
 import { PlantService } from './plant.service';
 import { PlantNutrientDto } from './dto/plant.nutrient.dto';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -16,7 +17,6 @@ import { UserEntity } from '../../DB/entity/user.entity';
 import { ZonePlantSelectDto } from './dto/plant.select.dto';
 import { ZonePlantServiceByHannah } from './service/plant.select.service';
 import { AuthJwtGuard } from '../auth/jwt/auth.jwt.guard';
-import { ZoneSettingQueryDto } from './dto/plant.zone-setting.dto';
 import { ZoneModeUpdateDto } from './dto/ZoneModeUpdateDto';
 import { PlantFogCycleDto } from './dto/plant.fog.cycle.dto';
 import { PlantFogPowerDto } from './dto/plant.fog.power.dto';
@@ -55,15 +55,20 @@ export class PlantController {
   @HttpCode(HttpStatus.OK)
   async getZoneSetting(
     @CurrentUser() user: UserEntity,
-    @Query() query: ZoneSettingQueryDto,
+    @Query('zone-id') zoneId: string,
   ) {
     console.log('📩 [GET /zone/setting] 요청 수신');
     console.log('   - 현재 유저:', user.user_id);
-    console.log('   - 쿼리:', query);
+    console.log('   - 쿼리:', zoneId);
+
+    // zone-id가 없으면 에러
+    if (!zoneId) {
+      throw new BadRequestException('zone-id 파라미터가 필요합니다.');
+    }
 
     const result = await this.zonePlantServiceByHannah.getZoneSetting(
       user.user_id,
-      query,
+      zoneId,
     );
 
     console.log('   👉 getZoneSetting 결과:', result);
