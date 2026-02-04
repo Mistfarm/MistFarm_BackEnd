@@ -6,8 +6,21 @@ import { DeviceRepository } from '../../DB/repository/device.repository';
 
 @Injectable()
 export class DeviceService {
-  constructor(private readonly deviceRepository: DeviceRepository) {}
+  // 정적 인스턴스 저장
+  private static instance: DeviceService;
+
+  constructor(private readonly deviceRepository: DeviceRepository) {
+    // 인스턴스 저장
+    DeviceService.instance = this;
+  }
+
+  // 정적 메서드 추가
+  static getInstance(): DeviceService | null {
+    return DeviceService.instance || null;
+  }
+
   private connections = new Map<number, WebSocket>();
+
   async connection(ws: WebSocket, req: IncomingMessage) {
     const url = new URL(req.url!, `http://${req.headers.host}`);
     const deviceId = url.searchParams.get('device_id');
@@ -35,6 +48,7 @@ export class DeviceService {
       this.delete(numberDeviceId);
     });
   }
+
   messageToDto(ws: WebSocket, data: RawData): DeviceInfoDto {
     const inputString = JSON.stringify(data);
     const input = JSON.parse(inputString) as {
@@ -66,6 +80,7 @@ export class DeviceService {
     }
     return info;
   }
+
   deviceInfo(deviceId: number, deviceInfoDto: DeviceInfoDto) {
     void this.deviceRepository.saveInfo({
       deviceId,
@@ -75,10 +90,12 @@ export class DeviceService {
       longitude: deviceInfoDto.payload.lon,
     });
   }
+
   delete(deviceId: number) {
     this.connections.delete(deviceId);
     void this.deviceRepository.disconnectDevice(deviceId);
   }
+
   send<T>(deviceId: number, type: string, payload: T) {
     const ws = this.connections.get(deviceId);
     if (ws) ws.send(JSON.stringify({ type, payload }));

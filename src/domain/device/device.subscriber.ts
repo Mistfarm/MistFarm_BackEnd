@@ -1,58 +1,52 @@
 import {
-  DataSource,
   EntitySubscriberInterface,
   EventSubscriber,
   UpdateEvent,
 } from 'typeorm';
 import { ZoneEntity } from '../../DB/entity/zone.entity';
 import { DeviceService } from './device.service';
-import { DeviceRepository } from '../../DB/repository/device.repository';
 import { Injectable } from '@nestjs/common';
+import { DeviceEntity } from '../../DB/entity/device.entity';
 
 @Injectable()
 @EventSubscriber()
 export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
-  constructor(
-    private readonly deviceService: DeviceService,
-    private readonly deviceRepository: DeviceRepository,
-  ) {}
+  constructor() {}
+
   listenTo() {
-    return ZoneEntity; // Zone 엔티티만 구독
+    return ZoneEntity;
   }
 
   async afterUpdate(event: UpdateEvent<ZoneEntity>) {
-    // 이번 업데이트에서 어떤 컬럼이 바뀌었는지 확인
     const updatedCols = event.updatedColumns.map((col) => col.propertyName);
     const entity = event.entity as ZoneEntity;
-    // nutrient 변경 감지
+
     if (updatedCols.includes('nutrient')) {
       const newNutrient = entity.nutrient;
-      await this.onNutrientChange(entity.zoneId, newNutrient);
+      await this.onNutrientChange(event, entity.zoneId, newNutrient);
     }
 
-    //mode 변경감지
     if (updatedCols.includes('autoFogMode')) {
       const newMode = entity.autoFogMode;
       if (newMode) {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
         await this.onNotAutoFogChange(
+          event,
           entity.zoneId,
           newFogOnTime,
           newFogOffTime,
         );
       } else {
         const newPower = entity.fogPower;
-        await this.onAutoFogChange(entity.zoneId, newPower);
+        await this.onAutoFogChange(event, entity.zoneId, newPower);
       }
     } else {
-      // fogPower 변경 감지
       if (updatedCols.includes('fogPower')) {
         const newFogPower = entity.fogPower;
-        await this.onAutoFogChange(entity.zoneId, newFogPower);
+        await this.onAutoFogChange(event, entity.zoneId, newFogPower);
       }
 
-      //fog-interval 변경감지
       if (
         updatedCols.includes('autoFogOnTime') ||
         updatedCols.includes('autoFogOffTime')
@@ -60,6 +54,7 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
         const newFogOnTime = entity.autoFogOnTime;
         const newFogOffTime = entity.autoFogOffTime;
         await this.onNotAutoFogChange(
+          event,
           entity.zoneId,
           newFogOnTime,
           newFogOffTime,
@@ -68,48 +63,79 @@ export class DeviceSubscriber implements EntitySubscriberInterface<ZoneEntity> {
     }
   }
 
-  // nutrient 변경 함수
-  async onNutrientChange(zoneId: string, newValue: number | undefined) {
-    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
-      devices.forEach((device) => {
-        this.deviceService.send<{ nutrient: number | undefined }>(
-          device.deviceId,
-          'set-nutrient-ratio',
-          { nutrient: newValue },
-        );
-      });
+  async onNutrientChange(
+    event: UpdateEvent<ZoneEntity>,
+    zoneId: string,
+    newValue: number | undefined,
+  ) {
+    const devices = await event.manager.find(DeviceEntity, {
+      where: { zoneId },
+    });
+
+    const deviceService = DeviceService.getInstance();
+    if (!deviceService) {
+      console.warn('DeviceService not initialized yet');
+      return;
+    }
+
+    devices.forEach((device) => {
+      deviceService.send<{ nutrient: number | undefined }>(
+        device.deviceId,
+        'set-nutrient-ratio',
+        { nutrient: newValue },
+      );
     });
   }
 
-  // fogPower 변경 함수
-  async onAutoFogChange(zoneId: string, newValue: boolean | undefined) {
-    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
-      devices.forEach((device) => {
-        this.deviceService.send<{ mode: number; power: number | undefined }>(
-          device.deviceId,
-          'set-fog-mode',
-          { mode: 0, power: newValue ? 1 : 0 },
-        );
-      });
+  async onAutoFogChange(
+    event: UpdateEvent<ZoneEntity>,
+    zoneId: string,
+    newValue: boolean | undefined,
+  ) {
+    const devices = await event.manager.find(DeviceEntity, {
+      where: { zoneId },
+    });
+
+    const deviceService = DeviceService.getInstance();
+    if (!deviceService) {
+      console.warn('DeviceService not initialized yet');
+      return;
+    }
+
+    devices.forEach((device) => {
+      deviceService.send<{ mode: number; power: number | undefined }>(
+        device.deviceId,
+        'set-fog-mode',
+        { mode: 0, power: newValue ? 1 : 0 },
+      );
     });
   }
 
   async onNotAutoFogChange(
+    event: UpdateEvent<ZoneEntity>,
     zoneId: string,
     newOnValue: string | undefined,
     newOffValue: string | undefined,
   ) {
-    await this.deviceRepository.findByZoneId(zoneId).then((devices) => {
-      devices.forEach((device) => {
-        this.deviceService.send<{
-          mode: number;
-          onInterval: string | undefined;
-          offInterval: string | undefined;
-        }>(device.deviceId, 'set-fog-mode', {
-          mode: 1,
-          onInterval: newOnValue,
-          offInterval: newOffValue,
-        });
+    const devices = await event.manager.find(DeviceEntity, {
+      where: { zoneId },
+    });
+
+    const deviceService = DeviceService.getInstance();
+    if (!deviceService) {
+      console.warn('DeviceService not initialized yet');
+      return;
+    }
+
+    devices.forEach((device) => {
+      deviceService.send<{
+        mode: number;
+        onInterval: string | undefined;
+        offInterval: string | undefined;
+      }>(device.deviceId, 'set-fog-mode', {
+        mode: 1,
+        onInterval: newOnValue,
+        offInterval: newOffValue,
       });
     });
   }
