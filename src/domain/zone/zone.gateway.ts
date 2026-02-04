@@ -21,17 +21,21 @@ import { UserRepository } from '../../DB/repository/user.repository';
       console.log('[CORS] origin:', origin);
       console.log('[CORS] allowedOrigins:', allowedOrigins);
 
+      // origin이 없는 경우도 허용 (같은 도메인에서의 요청)
       if (!origin || allowedOrigins.includes(origin)) {
+        console.log('[CORS] ✅ 허용됨');
         callback(null, true);
       } else {
-        console.log('[CORS] 차단된 origin:', origin);
+        console.log('[CORS] ❌ 차단된 origin:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
+    methods: ['GET', 'POST'], // 추가
   },
-  transports: ['websocket', 'polling'], // 명시적 설정
-  path: '/socket.io', // Socket.IO 기본 경로
+  // transports와 path 제거하거나 주석 처리
+  // transports: ['websocket', 'polling'],
+  // path: '/socket.io',
 })
 export class ZoneDeviceGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -43,17 +47,22 @@ export class ZoneDeviceGateway
     private readonly jwtService: JwtService,
   ) {
     console.log('✅ ZoneDeviceGateway 초기화 완료');
+    console.log('   - namespace: /zone/devices');
   }
 
   handleConnection(client: Socket) {
     console.log(`✅ [WS CONNECT] 클라이언트 연결: ${client.id}`);
     console.log('   - namespace:', client.nsp?.name);
-    console.log('   - handshake address:', client.handshake?.address);
-    console.log('   - handshake query:', client.handshake?.query);
-    console.log(
-      '   - handshake headers origin:',
-      client.handshake?.headers?.origin,
-    );
+    console.log('   - transport:', client.conn.transport.name);
+    console.log('   - address:', client.handshake?.address);
+    console.log('   - query:', client.handshake?.query);
+    console.log('   - origin:', client.handshake?.headers?.origin);
+
+    // 연결 확인 응답
+    client.emit('connected', {
+      clientId: client.id,
+      message: 'Connected successfully',
+    });
   }
 
   handleDisconnect(client: Socket) {
