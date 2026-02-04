@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ZonePlantSelectDto } from '../dto/plant.select.dto';
 import { ZoneRepository } from '../../../DB/repository/zone.repository';
 import {
-  ZoneSettingQueryDto,
   ZoneSettingResponseAuto,
   ZoneSettingResponseManual,
 } from '../dto/plant.zone-setting.dto';
@@ -35,11 +34,11 @@ export class ZonePlantServiceByHannah {
 
   async getZoneSetting(
     userId: string,
-    dto: ZoneSettingQueryDto,
+    zoneId: string,
   ): Promise<ZoneSettingResponseAuto | ZoneSettingResponseManual> {
     // 1. zone 조회 + user 검증
     const zone = await this.zoneRepo.findOne({
-      where: { zoneId: dto.zoneId, userId },
+      where: { zoneId, userId },
     });
 
     if (!zone) {
