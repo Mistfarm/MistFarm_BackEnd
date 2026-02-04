@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DeviceModule } from './domain/device/device.module';
 import { AuthModule } from './domain/auth/auth.module';
@@ -11,6 +10,7 @@ import { ZoneModule } from './domain/zone/zone.module';
 import { DeviceSubscriber } from './domain/device/device.subscriber';
 import { AiModule } from './domain/ai/ai.module';
 import { PlantModule } from './domain/plant/plant.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [

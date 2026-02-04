@@ -9,6 +9,7 @@ import {
   Get,
   Delete,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { ZoneRegistrationDto } from './dto/zone.registration.dto';
 import { CurrentUser } from '../auth/decorater/decorator.user';
@@ -93,6 +94,11 @@ export class ZoneController {
     @CurrentUser() user: UserEntity,
     @Query('zone-id') zoneId: string,
   ): Promise<DevicesResponse> {
+    // zone-id가 없으면 에러
+    if (!zoneId) {
+      throw new BadRequestException('zone-id 파라미터가 필요합니다.');
+    }
+
     return this.zoneDeviceListService.getZoneDevicesByZone(
       user.user_id,
       zoneId,
