@@ -61,7 +61,6 @@ export class PlantController {
     console.log('   - 현재 유저:', user.user_id);
     console.log('   - 쿼리:', zoneId);
 
-    // zone-id가 없으면 에러
     if (!zoneId) {
       throw new BadRequestException('zone-id 파라미터가 필요합니다.');
     }
@@ -89,37 +88,64 @@ export class PlantController {
     await this.zonePlantServiceByHannah.updateMode(user.user_id, dto);
 
     console.log('   👉 updateMode 완료');
-    return {}; // body 비워도 OK
+    return {};
   }
 
+  @UseGuards(AuthJwtGuard)
   @Put('/zone/setting/nutrient')
-  async setterNutrient(@Body() nutrientDto: PlantNutrientDto) {
+  @HttpCode(HttpStatus.OK)
+  async setterNutrient(
+    @CurrentUser() user: UserEntity,
+    @Body() nutrientDto: PlantNutrientDto,
+  ) {
     console.log('📩 [PUT /zone/setting/nutrient] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
     console.log('   - nutrient DTO:', nutrientDto);
 
-    const result = await this.plantService.setterNutrient(nutrientDto);
+    const result = await this.plantService.setterNutrient(
+      user.user_id, // ✅ userId 전달
+      nutrientDto,
+    );
 
     console.log('   👉 setterNutrient 결과:', result);
     return result;
   }
 
+  @UseGuards(AuthJwtGuard)
   @Put('/zone/setting/fog-cycle')
-  async setterFogCycle(@Body() plantFogCycleDto: PlantFogCycleDto) {
+  @HttpCode(HttpStatus.OK)
+  async setterFogCycle(
+    @CurrentUser() user: UserEntity,
+    @Body() plantFogCycleDto: PlantFogCycleDto,
+  ) {
     console.log('📩 [PUT /zone/setting/fog-cycle] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
     console.log('   - fog cycle DTO:', plantFogCycleDto);
 
-    const result = await this.plantService.fogCycleSetter(plantFogCycleDto);
+    const result = await this.plantService.fogCycleSetter(
+      user.user_id, // ✅ userId 전달
+      plantFogCycleDto,
+    );
 
     console.log('   👉 fogCycleSetter 결과:', result);
     return result;
   }
 
+  @UseGuards(AuthJwtGuard)
   @Put('/zone/setting/fog-power')
-  async setterFogPower(@Body() plantFogPowerDto: PlantFogPowerDto) {
+  @HttpCode(HttpStatus.OK)
+  async setterFogPower(
+    @CurrentUser() user: UserEntity,
+    @Body() plantFogPowerDto: PlantFogPowerDto,
+  ) {
     console.log('📩 [PUT /zone/setting/fog-power] 요청 수신');
+    console.log('   - 현재 유저:', user.user_id);
     console.log('   - fog power DTO:', plantFogPowerDto);
 
-    const result = await this.plantService.fogPowerSetter(plantFogPowerDto);
+    const result = await this.plantService.fogPowerSetter(
+      user.user_id, // ✅ userId 전달
+      plantFogPowerDto,
+    );
 
     console.log('   👉 fogPowerSetter 결과:', result);
     return result;

@@ -13,10 +13,31 @@ import { ZoneRepository } from '../../DB/repository/zone.repository';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../../DB/repository/user.repository';
 
+interface JwtPayload {
+  id: string;
+}
+
+interface GetDevicesStatusData {
+  zoneId: string;
+  token: string;
+}
+
+interface DeviceStatusPayload {
+  devices: Array<{
+    deviceName: string;
+    connected: boolean;
+    lat: number;
+    lon: number;
+  }>;
+}
+
 @WebSocketGateway({
   namespace: '/zone/devices',
   cors: {
-    origin: (origin, callback) => {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
       const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
       console.log('[CORS] origin:', origin);
       console.log('[CORS] allowedOrigins:', allowedOrigins);
@@ -31,11 +52,8 @@ import { UserRepository } from '../../DB/repository/user.repository';
       }
     },
     credentials: true,
-    methods: ['GET', 'POST'], // 추가
+    methods: ['GET', 'POST'],
   },
-  // transports와 path 제거하거나 주석 처리
-  // transports: ['websocket', 'polling'],
-  // path: '/socket.io',
 })
 export class ZoneDeviceGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -50,7 +68,7 @@ export class ZoneDeviceGateway
     console.log('   - namespace: /zone/devices');
   }
 
-  handleConnection(client: Socket) {
+  handleConnection(client: Socket): void {
     console.log(`✅ [WS CONNECT] 클라이언트 연결: ${client.id}`);
     console.log('   - namespace:', client.nsp?.name);
     console.log('   - transport:', client.conn.transport.name);
@@ -65,7 +83,7 @@ export class ZoneDeviceGateway
     });
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket): void {
     console.log(`❌ [WS DISCONNECT] 클라이언트 연결 종료: ${client.id}`);
   }
 
@@ -74,7 +92,7 @@ export class ZoneDeviceGateway
     console.log('   - token length:', token?.length);
 
     try {
-      const payload = this.jwtService.verify<{ id: string }>(token);
+      const payload = this.jwtService.verify<JwtPayload>(token);
       console.log('✅ [JWT] 검증 성공 payload:', payload);
       return payload.id;
     } catch (error) {
@@ -86,9 +104,9 @@ export class ZoneDeviceGateway
 
   @SubscribeMessage('get-devices-status')
   async handleGetDevicesStatus(
-    @MessageBody() data: { zoneId: string; token: string },
+    @MessageBody() data: GetDevicesStatusData,
     @ConnectedSocket() client: Socket,
-  ) {
+  ): Promise<void> {
     console.log('📩 [EVENT] get-devices-status 수신');
     console.log('   - clientId:', client.id);
     console.log('   - raw data:', data);
@@ -147,7 +165,7 @@ export class ZoneDeviceGateway
       console.log('   - devices count:', devices?.length ?? 0);
       console.log('   - devices sample[0]:', devices?.[0]);
 
-      const payload = {
+      const payload: DeviceStatusPayload = {
         devices: devices.map((d) => ({
           deviceName: d.deviceName,
           connected: d.onConnect,
